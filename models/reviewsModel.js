@@ -16,7 +16,7 @@ const reviewSchema = new mongoose.Schema({
     default: Date.now(),
   },
   book: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.ObjectId, //* ISBN
     ref: "Book",
     required: [true, "Review must belong to book"],
   },
