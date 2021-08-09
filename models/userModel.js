@@ -1,41 +1,54 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please tell us your name!"],
+      required: [true, 'Please tell us your name!'],
     },
     email: {
       type: String,
-      required: [true, "Please provide your email"],
+      required: [true, 'Please provide your email'],
       unique: true,
       lowercase: true,
-      validate: [validator.isEmail, "Please provide a valid email"],
+      validate: [validator.isEmail, 'Please provide a valid email'],
     },
     photo: {
       type: String,
-      default: "default.jpeg",
+      default: 'default.jpeg',
     },
     password: {
       type: String,
-      required: [true, "Please provide a password"],
+      required: [true, 'Please provide a password'],
       minlength: 8,
       select: false,
     },
     passwordConfirm: {
       type: String,
-      required: [true, "Please confirm your password"],
+      required: [true, 'Please confirm your password'],
+      validate: {
+        //? Works only on CREATE and SAVE
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: 'Passwords are not the same',
+      },
       select: false,
     },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
     active: {
       type: Boolean,
       default: true,
+      select: false,
     },
     role: {
       type: String,
-      default: "user",
+      default: 'user',
+      enum: ['user', 'admin'],
     },
     verified: {
       type: Boolean,
@@ -49,13 +62,13 @@ const userSchema = new mongoose.Schema(
     wantToReadBooks: [
       {
         type: mongoose.Schema.ObjectId, //* ISBN
-        ref: "Book",
+        ref: 'Book',
       },
     ],
     currentlyReadingBooks: [
       {
         type: mongoose.Schema.ObjectId, //* ISBN
-        ref: "Book",
+        ref: 'Book',
       },
     ],
   },
@@ -65,11 +78,20 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  this.password = await bcrypt.hash(this.password, 12);
+
+  this.passwordConfirm = undefined;
+  next();
+});
+
 // tourSchema.virtual("wantToReadBooksQuantity").get(function () {});
 // tourSchema.virtual("haveReadBooksQuantity").get(function () {});
 // tourSchema.virtual("wantToReadPagesQuantity").get(function () {});
 // tourSchema.virtual("haveReadPagesQuantity").get(function () {});
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
