@@ -62,14 +62,17 @@ const userSchema = new mongoose.Schema(
     },
     wantToReadBooks: [
       {
-        type: mongoose.Schema.ObjectId, //* ISBN
-        ref: 'Book',
+        type: String, //* ISBN
       },
     ],
     currentlyReadingBooks: [
       {
-        type: mongoose.Schema.ObjectId, //* ISBN
-        ref: 'Book',
+        type: String, //* ISBN
+      },
+    ],
+    haveReadBooks: [
+      {
+        type: String, //* ISBN
       },
     ],
   },
