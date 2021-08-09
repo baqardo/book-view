@@ -1,4 +1,5 @@
-const express = require("express");
+const express = require('express');
+const { getAllUsers, getUser, updateUser, deleteUser, createUser } = require('../controllers/userController');
 
 const router = express.Router();
 
@@ -16,9 +17,10 @@ const router = express.Router();
 // router.patch("/updateMe", uploadUserPhoto, resizeUserPhoto, updateMe);
 // router.delete("/deleteMe", deleteMe);
 
+//! Routes only for admin
 // router.use(restrictTo("admin"));
 
-// router.route("/").get(getAllUsers).post(createUser);
-// router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
+router.route('/').get(getAllUsers).post(createUser);
+router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 module.exports = router;
