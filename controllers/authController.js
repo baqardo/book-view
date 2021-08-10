@@ -95,16 +95,28 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('+password');
+
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password)))
+    return next(new AppError('Your current password is wrong', 401));
+
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+
+  createSendToken(user, 200, res);
+});
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
-  console.log(JWTTimestamp, changedTimestamp);
 
   if (req.headers.authorization) token = req.headers.authorization.split(' ')[1];
   if (!token) return next(new AppError('You are not logged in! Please log in to get access.', 401));
 
   //* Verify token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
+
   //* Check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) return next(new AppError('The user belonging to this token does no longer exist.', 401));
@@ -120,7 +132,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    console.log('Restrict');
     if (!roles.includes(req.user.role))
       return next(new AppError('You do not have permission to perform this action', 403));
 
