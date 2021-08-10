@@ -91,6 +91,18 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
+
 // tourSchema.virtual("wantToReadBooksQuantity").get(function () {});
 // tourSchema.virtual("haveReadBooksQuantity").get(function () {});
 // tourSchema.virtual("wantToReadPagesQuantity").get(function () {});
@@ -109,6 +121,14 @@ userSchema.methods.createPasswordResetToken = function () {
   this.passwordResetExpires = Date.now() + 10 * minuteInMilliseconds;
 
   return resetToken;
+};
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (!this.passwordChangedAt) return false;
+
+  const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+
+  return JWTTimestamp < changedTimestamp;
 };
 
 const User = mongoose.model('User', userSchema);
