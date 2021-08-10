@@ -97,6 +97,8 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
+  console.log(JWTTimestamp, changedTimestamp);
+
   if (req.headers.authorization) token = req.headers.authorization.split(' ')[1];
   if (!token) return next(new AppError('You are not logged in! Please log in to get access.', 401));
 
@@ -107,7 +109,9 @@ exports.protect = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) return next(new AppError('The user belonging to this token does no longer exist.', 401));
 
-  //TODO Check if user password changed after token was issued
+  //* Check if user password changed after token was issued
+  if (currentUser.changedPasswordAfter(decoded.iat))
+    return next(new AppError('User recently changed password! Please log in again.', 401));
 
   //* Grant access to protected route
   req.user = currentUser;
