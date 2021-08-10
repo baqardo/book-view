@@ -1,5 +1,13 @@
 const express = require('express');
-const { getAllUsers, getUser, updateUser, deleteUser, createUser, getMe } = require('../controllers/userController');
+const {
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  createUser,
+  getMe,
+  updateMe,
+} = require('../controllers/userController');
 const {
   signup,
   login,
@@ -23,7 +31,7 @@ router.use(protect);
 // router.get("/logout", logout);
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);
-// router.patch("/updateMe", updateMe);
+router.patch('/updateMe', updateMe);
 // router.delete("/deleteMe", deleteMe);
 
 //! Routes only for admin
