@@ -15,6 +15,9 @@ exports.createOne = Model =>
 
 exports.updateOne = Model =>
   catchAsync(async (req, res, next) => {
+    if (req.body.password || req.body.passwordConfirm)
+      return next(new AppError("You can't change password using this route", 403));
+
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
