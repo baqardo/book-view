@@ -6,6 +6,8 @@ const {
   getReview,
   updateReview,
   deleteReview,
+  setUserId,
+  checkIfBelong,
 } = require('../controllers/reviewController');
 
 const { protect, restrictTo } = require('../controllers/authController');
@@ -14,11 +16,11 @@ const router = express.Router();
 
 router.use(protect);
 
-router.route('/').get(getAllReviews).post(restrictTo('user'), createReview);
+router.route('/').get(getAllReviews).post(restrictTo('user'), setUserId, createReview);
 router
   .route('/:id')
   .get(getReview)
-  .patch(restrictTo('user', 'admin'), updateReview)
-  .delete(restrictTo('user', 'admin'), deleteReview);
+  .patch(restrictTo('user', 'admin'), checkIfBelong, updateReview)
+  .delete(restrictTo('user', 'admin'), checkIfBelong, deleteReview);
 
 module.exports = router;
