@@ -16,8 +16,6 @@ const signToken = id => {
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
 
-  const dayInMilliseconds = 24 * 60 * 60 * 1000;
-
   user.password = undefined;
 
   res.status(statusCode).json({
@@ -31,10 +29,15 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res) => {
   const filteredBody = filterObj.holdFields(req.body, 'name', 'email', 'password', 'passwordConfirm');
-
-  console.log(filteredBody);
+  filteredBody.emailVerificationToken = User.createEmailVerificationToken();
 
   const newUser = await User.create(filteredBody);
+  newUser.emailVerificationToken = undefined;
+
+  const verificationUrl = `${req.protocol}://${req.get('host')}/api/v1/users/verifyEmail/${
+    filteredBody.emailVerificationToken
+  }`;
+  await new Email(newUser, verificationUrl).sendEmailVerification();
 
   createSendToken(newUser, 201, res);
 });
@@ -138,3 +141,27 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+// exports.verified = (req, res, next) => {
+//   if (req.user.verified) return next();
+
+//   const url = `${req.protocol}://${req.get('host')}/api/v1/users/sendVerificationEmail`;
+//   next(
+//     new AppError(
+//       `Please verify your email address.\n If you didn't get email with verification link please use path:  `
+//     )
+//   );
+// };
+
+exports.verifyEmail = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ emailVerificationToken: req.params.token });
+  if (!user) return next(new AppError('Token is invalid', 400));
+  user.emailVerificationToken = undefined;
+  user.verified = true;
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Your email has been verified.',
+  });
+});
