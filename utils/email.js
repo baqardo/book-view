@@ -19,8 +19,7 @@ module.exports = class Email {
     });
   }
 
-  async send(subject) {
-    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${this.url}.\nIf you didn't forget your password, please ignore this email!`;
+  async send(subject, message) {
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -32,6 +31,16 @@ module.exports = class Email {
   }
 
   async sendPasswordReset() {
-    await this.send('Your password reset token (valid for only 10 minutes)');
+    await this.send(
+      'Your password reset token (valid for only 10 minutes)',
+      `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${this.url}.\nIf you didn't forget your password, please ignore this email!`
+    );
+  }
+
+  async sendEmailVerification() {
+    await this.send(
+      'Your email verification token',
+      `Please verify your email. Submit a PATCH request to: ${this.url}.\nIf you didn't create account on our website, please ignore this email!`
+    );
   }
 };
