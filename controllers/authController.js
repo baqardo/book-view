@@ -142,16 +142,16 @@ exports.restrictTo = (...roles) => {
   };
 };
 
-// exports.verified = (req, res, next) => {
-//   if (req.user.verified) return next();
+exports.verified = (req, res, next) => {
+  if (req.user.verified) return next();
 
-//   const url = `${req.protocol}://${req.get('host')}/api/v1/users/sendVerificationEmail`;
-//   next(
-//     new AppError(
-//       `Please verify your email address.\n If you didn't get email with verification link please use path:  `
-//     )
-//   );
-// };
+  const url = `${req.protocol}://${req.get('host')}/api/v1/users/sendVerificationEmail`;
+  next(
+    new AppError(
+      `Please verify your email address. If you didn't get email with verification link please use path: ${url}`
+    )
+  );
+};
 
 exports.verifyEmail = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ emailVerificationToken: req.params.token });

@@ -10,11 +10,11 @@ const {
   checkIfBelong,
 } = require('../controllers/reviewController');
 
-const { protect, restrictTo } = require('../controllers/authController');
+const { protect, restrictTo, verified } = require('../controllers/authController');
 
 const router = express.Router();
 
-router.use(protect);
+router.use(protect, verified);
 
 router.route('/').get(getAllReviews).post(restrictTo('user'), setUserId, createReview);
 router
