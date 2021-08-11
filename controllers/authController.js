@@ -165,3 +165,21 @@ exports.verifyEmail = catchAsync(async (req, res, next) => {
     message: 'Your email has been verified.',
   });
 });
+
+exports.sendVerificationEmail = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('+emailVerificationToken');
+  if (!user.emailVerificationToken) next(new AppError('Your email is already verified.'));
+
+  try {
+    const verifyUrl = `${req.protocol}://${req.get('host')}/api/v1/users/verifyEmail/${user.emailVerificationToken}`;
+
+    await new Email(user, verifyUrl).sendEmailVerification();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Verification email has been sent',
+    });
+  } catch (err) {
+    return next(new AppError('There was an error sending the email. Try again later!', 500));
+  }
+});

@@ -48,7 +48,6 @@ reviewSchema.statics.calcAverageRatings = async function (bookId) {
 };
 
 reviewSchema.post('save', function () {
-  console.log(this.book);
   this.constructor.calcAverageRatings(this.book);
 });
 

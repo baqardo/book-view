@@ -18,6 +18,7 @@ const {
   restrictTo,
   updatePassword,
   verifyEmail,
+  sendVerificationEmail,
 } = require('../controllers/authController');
 
 const router = express.Router();
@@ -33,6 +34,7 @@ router.patch('/verifyEmail/:token', verifyEmail);
 router.use(protect);
 
 // router.get("/logout", logout);
+router.get('/sendVerificationEmail', sendVerificationEmail);
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);
 router.patch('/updateMe', updateMe);
