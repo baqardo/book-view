@@ -82,6 +82,12 @@ const userSchema = new mongoose.Schema(
         ref: 'Book',
       },
     ],
+    likedBooks: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Book',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },

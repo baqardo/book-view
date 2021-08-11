@@ -34,6 +34,12 @@ const bookSchema = new mongoose.Schema({
       ref: 'User',
     },
   ],
+  haveLiked: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 const Book = mongoose.model('Book', bookSchema);
