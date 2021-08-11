@@ -17,6 +17,11 @@ app.use(express.json({ limit: '10kb' }));
 
 //? Routes
 
+app.get('/express_backend', (req, res) => {
+  //Line 9
+  res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' }); //Line 10
+}); //Line 11
+
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/books', bookRouter);
