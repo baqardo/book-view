@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    emailVerificationToken: {
+      type: String,
+      select: false,
+    },
     createdAt: {
       type: Date,
       default: Date.now(),
@@ -124,6 +128,11 @@ userSchema.methods.createPasswordResetToken = function () {
   this.passwordResetExpires = Date.now() + 10 * minuteInMilliseconds;
 
   return resetToken;
+};
+
+userSchema.statics.createEmailVerificationToken = function () {
+  const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+  return emailVerificationToken;
 };
 
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
