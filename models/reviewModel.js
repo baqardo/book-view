@@ -28,6 +28,8 @@ const reviewSchema = new mongoose.Schema({
   },
 });
 
+reviewSchema.index({ book: 1, user: 1 }, { unique: true });
+
 reviewSchema.statics.calcAverageRatings = async function (bookId) {
   const stats = await this.aggregate([
     {
