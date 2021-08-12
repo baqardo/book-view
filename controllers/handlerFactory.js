@@ -8,9 +8,7 @@ exports.createOne = Model =>
 
     res.status(201).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      data: doc,
     });
   });
 
@@ -28,9 +26,7 @@ exports.updateOne = Model =>
 
     res.status(200).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      data: doc,
     });
   });
 
@@ -42,9 +38,7 @@ exports.getAll = Model =>
     res.status(200).json({
       status: 'success',
       results: doc.length,
-      data: {
-        data: doc,
-      },
+      data: doc,
     });
   });
 
@@ -57,9 +51,20 @@ exports.getOne = (Model, popOptions) =>
 
     res.status(200).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      data: doc,
+    });
+  });
+
+exports.getOneByField = (Model, popOptions) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findOne({ [req.params.fieldName]: req.params.fieldValue });
+    if (popOptions) query.populate(popOptions);
+    const doc = await query;
+    if (!doc) return next(new AppError('No document found with that ID', 404));
+
+    res.status(200).json({
+      status: 'success',
+      data: doc,
     });
   });
 
