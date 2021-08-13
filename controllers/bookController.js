@@ -1,5 +1,12 @@
 const Book = require('../models/bookModel');
 const factory = require('./handlerFactory');
+const filterObj = require('../utils/filterObj');
+
+exports.onlyOLID = (req, res, next) => {
+  const filteredBody = filterObj.holdFields(req.body, 'OLID');
+  req.body = filteredBody;
+  next();
+};
 
 exports.createBook = factory.createOne(Book);
 exports.updateBook = factory.updateOne(Book);
