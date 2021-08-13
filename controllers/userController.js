@@ -35,8 +35,68 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// exports.addLikedBook = catchAsync(async (req, res, next) => {
+//   const updatedUser = await User.findOneAndUpdate(
+//     req.user.id,
+//     { $addToSet: { likedBooks: req.params.bookId } },
+//     {
+//       new: true,
+//       runValidators: true,
+//     }
+//   );
+
+//   res.status(200).json({
+//     status: 'success',
+//     data: updatedUser,
+//   });
+// });
+
+// exports.removeLikedBook = catchAsync(async (req, res, next) => {
+//   const updatedUser = await User.findOneAndUpdate(
+//     req.user.id,
+//     { $pull: { likedBooks: req.params.bookId } },
+//     {
+//       new: true,
+//       runValidators: true,
+//     }
+//   );
+
+//   res.status(200).json({
+//     status: 'success',
+//     data: updatedUser,
+//   });
+// });
+
 exports.createUser = factory.createOne(User);
 exports.updateUser = factory.updateOne(User);
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 exports.deleteUser = factory.deleteOne(User);
+
+//?Operation is either add or remove
+const updateList = (operation, listName) =>
+  catchAsync(async (req, res, next) => {
+    const operator = operation === 'remove' ? '$pull' : '$addToSet';
+    const updatedUser = await User.findOneAndUpdate(
+      req.user.id,
+      { [operator]: { [listName]: req.params.bookId } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      data: updatedUser,
+    });
+  });
+
+exports.addLikedBook = updateList('add', 'likedBooks');
+exports.removeLikedBook = updateList('remove', 'likedBooks');
+exports.addToReadBook = updateList('add', 'wantToReadBooks');
+exports.removeToReadBook = updateList('remove', 'wantToReadBooks');
+exports.addCurrentlyReadingBook = updateList('add', 'currentlyReadingBooks');
+exports.removeCurrentlyReadingBook = updateList('remove', 'currentlyReadingBooks');
+exports.addHaveReadBook = updateList('add', 'haveReadBooks');
+exports.removeHaveReadBook = updateList('remove', 'haveReadBooks');

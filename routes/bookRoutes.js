@@ -1,4 +1,5 @@
 const express = require('express');
+const userRouter = require('./userRoutes');
 
 const {
   createBook,
@@ -13,6 +14,8 @@ const {
 const { protect, restrictTo, verified } = require('../controllers/authController');
 
 const router = express.Router();
+
+router.use('/:bookId/users', userRouter);
 
 router.post('/autoGenerate', protect, verified, onlyOLID, createBook);
 router.route('/').get(getAllBooks).post(protect, restrictTo('admin'), createBook);
