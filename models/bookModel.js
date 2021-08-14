@@ -18,30 +18,26 @@ const bookSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    haveRead: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-      },
-    ],
-    wantRead: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-      },
-    ],
-    currentlyReading: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-      },
-    ],
-    haveLiked: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-      },
-    ],
+    wantReadBooksQuantity: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    currentlyReadingBooksQuantity: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    haveReadBooksQuantity: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    likedBooksQuantity: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   {
     toJSON: { virtuals: true },

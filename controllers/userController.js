@@ -35,38 +35,6 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.addLikedBook = catchAsync(async (req, res, next) => {
-//   const updatedUser = await User.findOneAndUpdate(
-//     req.user.id,
-//     { $addToSet: { likedBooks: req.params.bookId } },
-//     {
-//       new: true,
-//       runValidators: true,
-//     }
-//   );
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: updatedUser,
-//   });
-// });
-
-// exports.removeLikedBook = catchAsync(async (req, res, next) => {
-//   const updatedUser = await User.findOneAndUpdate(
-//     req.user.id,
-//     { $pull: { likedBooks: req.params.bookId } },
-//     {
-//       new: true,
-//       runValidators: true,
-//     }
-//   );
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: updatedUser,
-//   });
-// });
-
 exports.createUser = factory.createOne(User);
 exports.updateUser = factory.updateOne(User);
 exports.getAllUsers = factory.getAll(User);
@@ -86,6 +54,8 @@ const updateList = (operation, listName) =>
       }
     );
 
+    updatedUser.calcQuantity(req.params.bookId, listName);
+
     res.status(200).json({
       status: 'success',
       data: updatedUser,
@@ -94,8 +64,8 @@ const updateList = (operation, listName) =>
 
 exports.addLikedBook = updateList('add', 'likedBooks');
 exports.removeLikedBook = updateList('remove', 'likedBooks');
-exports.addToReadBook = updateList('add', 'wantToReadBooks');
-exports.removeToReadBook = updateList('remove', 'wantToReadBooks');
+exports.addToReadBook = updateList('add', 'wantReadBooks');
+exports.removeToReadBook = updateList('remove', 'wantReadBooks');
 exports.addCurrentlyReadingBook = updateList('add', 'currentlyReadingBooks');
 exports.removeCurrentlyReadingBook = updateList('remove', 'currentlyReadingBooks');
 exports.addHaveReadBook = updateList('add', 'haveReadBooks');

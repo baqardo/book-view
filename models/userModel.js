@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const Book = require('./bookModel.js');
 
 const userSchema = new mongoose.Schema(
   {
@@ -64,7 +65,7 @@ const userSchema = new mongoose.Schema(
       default: Date.now(),
       select: false,
     },
-    wantToReadBooks: [
+    wantReadBooks: [
       {
         type: mongoose.Schema.ObjectId,
         ref: 'Book',
@@ -116,11 +117,6 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
-// tourSchema.virtual("wantToReadBooksQuantity").get(function () {});
-// tourSchema.virtual("haveReadBooksQuantity").get(function () {});
-// tourSchema.virtual("wantToReadPagesQuantity").get(function () {});
-// tourSchema.virtual("haveReadPagesQuantity").get(function () {});
-
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
@@ -147,6 +143,31 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
 
   return JWTTimestamp < changedTimestamp;
+};
+
+userSchema.methods.calcQuantity = async function (bookId, fieldName) {
+  const stats = await User.aggregate([
+    {
+      $match: { [fieldName]: mongoose.Types.ObjectId(bookId) },
+    },
+    {
+      $group: {
+        _id: fieldName,
+        sum: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const quantityField = fieldName + 'Quantity';
+
+  if (stats.length > 0)
+    await Book.findByIdAndUpdate(bookId, {
+      [quantityField]: stats[0].sum,
+    });
+  else
+    await Book.findByIdAndUpdate(bookId, {
+      [quantityField]: 0,
+    });
 };
 
 const User = mongoose.model('User', userSchema);
