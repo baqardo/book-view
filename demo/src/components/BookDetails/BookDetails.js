@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './BookDetails.scss';
 import { withRouter } from 'react-router';
 import axios from 'axios';
+import AsyncError from '../../utils/asyncError';
+import withErrorHandler from '../../hoc/withErrorHandler';
 
 class BookDetails extends Component {
   constructor(props) {
@@ -16,27 +18,35 @@ class BookDetails extends Component {
   }
 
   componentDidMount() {
-    this.getBookDetails().then(res => {
-      this.setState(state => ({
-        ...state,
-        ...res,
-      }));
-    });
-    this.getBookRatings().then(res => {
-      this.setState(state => ({
-        ...state,
-        ...res,
-      }));
-    });
+    this.loadBookData()
+      .then(res => {
+        this.setState(state => ({
+          ...state,
+          ...res,
+        }));
+      })
+      .catch(err => {
+        this.props.handleError(err);
+      });
   }
 
-  async getBookDetails() {
+  async loadBookData() {
+    const bookData = await this.loadBookDataFromExternalAPI();
+    const bookAdditionalData = await this.loadBookDataFromInternalAPI();
+
+    return { ...bookData, ...bookAdditionalData };
+  }
+
+  async loadBookDataFromExternalAPI() {
     const id = this.state.id;
-    const response = await axios.get(`https://openlibrary.org/works/${id}.json`);
+    const response = await axios.get(`https://openlibrary.org/works/${id}s.json`).catch(err => {
+      throw new AsyncError(err.response.statusText);
+    });
     const data = response.data;
+    const coverId = response.data.covers[0];
 
     const bookDetails = {
-      cover: `http://covers.openlibrary.org/b/olid/${id}-M.jpg`,
+      cover: `http://covers.openlibrary.org/b/id/${coverId}-M.jpg`,
       title: data.title,
       publishDate: data.first_publish_date,
       description: data.description,
@@ -47,20 +57,34 @@ class BookDetails extends Component {
     return bookDetails;
   }
 
-  async getBookRatings() {
-    const id = this.state.id;
-    const response = await axios.get(`http://localhost:8080/api/v1/books/OLID/${id}`);
-    const { data } = response.data;
+  async loadBookDataFromInternalAPI() {
+    try {
+      const id = this.state.id;
+      const response = await axios.get(`http://localhost:8080/api/v1/books/OLID/${id}`);
+      const { data } = response.data;
 
-    const bookRatings = {
-      ratingsAverage: data.ratingsAverage,
-      ratingsQuantity: data.ratingsQuantity,
-      reviews: data.reviews,
-    };
+      const bookRatings = {
+        ratingsAverage: data.ratingsAverage,
+        ratingsQuantity: data.ratingsQuantity,
+        reviews: data.reviews,
+        likes: data.likedBooksQuantity,
+        wantRead: data.wantReadBooksQuantity,
+        haveRead: data.haveReadBooksQuantity,
+        currentlyReading: data.currentlyReadingBooksQuantity,
+      };
 
-    console.log(data);
-
-    return bookRatings;
+      return bookRatings;
+    } catch (err) {
+      return {
+        ratingsAverage: 4.5,
+        ratingsQuantity: 0,
+        reviews: [],
+        likes: 0,
+        wantRead: 0,
+        haveRead: 0,
+        currentlyReading: 0,
+      };
+    }
   }
 
   render() {
@@ -68,7 +92,6 @@ class BookDetails extends Component {
       this.state.loaded && (
         <div>
           ID: {this.state.id}
-          {console.log(this.state)}
           <br />
           Author: {this.state.author}
           <br />
@@ -101,10 +124,18 @@ class BookDetails extends Component {
               </li>
             ))}
           </ul>
+          Likes: {this.state.likes}
+          <br />
+          Want Read: {this.state.wantRead}
+          <br />
+          Have Read: {this.state.haveRead}
+          <br />
+          Currently Reading: {this.state.currentlyReading}
+          <br />
         </div>
       )
     );
   }
 }
 
-export default withRouter(BookDetails);
+export default withRouter(withErrorHandler(BookDetails));
