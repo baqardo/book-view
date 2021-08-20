@@ -27,12 +27,14 @@ const {
   updatePassword,
   verifyEmail,
   sendVerificationEmail,
+  logout,
 } = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
 router.post('/signup', signup);
 router.post('/login', login);
+router.post('/logout', logout);
 
 router.post('/forgotPassword', forgotPassword);
 router.post('/resetPassword/:token', resetPassword);

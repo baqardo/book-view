@@ -5,7 +5,7 @@ import Header from './components/Header/Header';
 import Home from './containers/Home/Home';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import BookDetails from './components/BookDetails/BookDetails';
+import BookDetails from './containers/BookDetails/BookDetails';
 
 class App extends Component {
   render() {
