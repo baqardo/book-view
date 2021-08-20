@@ -14,7 +14,7 @@ const signToken = id => {
 };
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
+  const token = signToken(user.id);
 
   const dayInMilliseconds = 24 * 60 * 60 * 1000;
   const cookieOptions = {
@@ -55,7 +55,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   if (!email || !password) return next(new AppError('Please provide email and password', 400));
 
-  const user = await User.findOne({ email, active: { $ne: false } }).select('+password');
+  const user = await User.findOne({ email, active: { $ne: false } }).select('+password -__v');
 
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError('Incorrect email or password', 401));

@@ -6,6 +6,7 @@ import Home from './containers/Home/Home';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import BookDetails from './containers/BookDetails/BookDetails';
+import Login from './components/Login/Login';
 
 class App extends Component {
   render() {
@@ -16,6 +17,9 @@ class App extends Component {
           <Switch>
             <Route path="/book/:id/author/:author">
               <BookDetails />
+            </Route>
+            <Route path="/login">
+              <Login />
             </Route>
             <Route path="/">
               <Home />
