@@ -39,7 +39,7 @@ class BookDetails extends Component {
 
   async loadBookDataFromExternalAPI() {
     const id = this.state.id;
-    const response = await axios.get(`https://openlibrary.org/works/${id}s.json`).catch(err => {
+    const response = await axios.get(`https://openlibrary.org/works/${id}.json`).catch(err => {
       throw new AsyncError(err.response.statusText);
     });
     const data = response.data;
