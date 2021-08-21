@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import { updateObject } from '../../utils/utility';
 
 const initialState = {
   loading: false,
@@ -17,44 +18,46 @@ const initialState = {
   id: null,
 };
 
+const loginStart = state => {
+  return updateObject(state, { error: null, loading: true });
+};
+
+const loginSuccess = (state, action) => {
+  const data = action.result;
+  const properties = {
+    loading: false,
+    photo: data.photo,
+    role: data.role,
+    verified: data.verified,
+    wantReadBooks: [...data.wantReadBooks],
+    currentlyReadingBooks: [...data.currentlyReadingBooks],
+    haveReadBooks: [...data.haveReadBooks],
+    likedBooks: [...data.likedBooks],
+    wantToReadBooks: [...data.wantToReadBooks],
+    name: data.name,
+    email: data.email,
+    passwordChangedAt: data.passwordChangedAt,
+    id: data.id,
+  };
+
+  return updateObject(state, properties);
+};
+
+const loginFail = (state, action) => {
+  const { message, name } = action.error;
+  const error = updateObject(state.error, { message, name });
+  const properties = { loading: false, error };
+  return updateObject(state, properties);
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.LOGIN_SUCCESS:
-      const data = action.result;
-      const newState = {
-        loading: false,
-        photo: data.photo,
-        role: data.role,
-        verified: data.verified,
-        wantReadBooks: [...data.wantReadBooks],
-        currentlyReadingBooks: [...data.currentlyReadingBooks],
-        haveReadBooks: [...data.haveReadBooks],
-        likedBooks: [...data.likedBooks],
-        wantToReadBooks: [...data.wantToReadBooks],
-        name: data.name,
-        email: data.email,
-        passwordChangedAt: data.passwordChangedAt,
-        id: data.id,
-      };
-      return {
-        ...state,
-        ...newState,
-      };
-    case actionTypes.LOGIN_FAIL:
-      const { message, name } = action.error;
-      return {
-        ...state,
-        loading: false,
-        error: {
-          message,
-          name,
-        },
-      };
     case actionTypes.LOGIN_START:
-      return {
-        ...state,
-        loading: true,
-      };
+      return loginStart(state);
+    case actionTypes.LOGIN_SUCCESS:
+      return loginSuccess(state, action);
+    case actionTypes.LOGIN_FAIL:
+      return loginFail(state, action);
     default:
       return state;
   }

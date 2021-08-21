@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import Book from '../../components/Book/Book';
 import './Home.scss';
 
@@ -7,6 +8,8 @@ class Home extends Component {
   state = { data: null };
 
   componentDidMount() {
+    this.props.history.replace('/');
+
     this.getBooksList()
       .then(res => {
         this.setState({ data: res });
@@ -47,4 +50,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default withRouter(Home);
