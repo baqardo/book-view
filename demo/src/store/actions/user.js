@@ -25,10 +25,14 @@ export const login = (email, password) => {
   return async dispatch => {
     dispatch(startLogin());
     try {
-      const result = await axios.post('http://localhost:8080/api/v1/users/login', {
-        email,
-        password,
-      });
+      const result = await axios.post(
+        'http://localhost:8080/api/v1/users/login',
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
 
       dispatch(successLogin(result.data.data));
     } catch (err) {

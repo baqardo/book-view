@@ -57,6 +57,7 @@ exports.getOne = (Model, popOptions) =>
 
 exports.getOneByField = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
+    console.log(req.cookies.jwt);
     let query = Model.findOne({ [req.params.fieldName]: req.params.fieldValue });
     if (popOptions) query.populate(popOptions);
     const doc = await query;
