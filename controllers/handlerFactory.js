@@ -44,7 +44,7 @@ exports.getAll = Model =>
 
 exports.getOne = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
-    let query = Model.findById(req.params.id);
+    let query = Model.findById(req.params.id).select('-__v');
     if (popOptions) query.populate(popOptions);
     const doc = await query;
     if (!doc) return next(new AppError('No document found with that ID', 404));
@@ -57,7 +57,6 @@ exports.getOne = (Model, popOptions) =>
 
 exports.getOneByField = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
-    console.log(req.cookies.jwt);
     let query = Model.findOne({ [req.params.fieldName]: req.params.fieldValue });
     if (popOptions) query.populate(popOptions);
     const doc = await query;

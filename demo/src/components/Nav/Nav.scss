@@ -1,0 +1,13 @@
+.nav {
+  margin: 2rem 1rem;
+}
+
+.nav__list {
+  display: flex;
+  list-style: none;
+  &-item {
+    & + & {
+      margin-left: 1rem;
+    }
+  }
+}

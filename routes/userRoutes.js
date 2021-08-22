@@ -34,7 +34,6 @@ const router = express.Router({ mergeParams: true });
 
 router.post('/signup', signup);
 router.post('/login', login);
-router.post('/logout', logout);
 
 router.post('/forgotPassword', forgotPassword);
 router.post('/resetPassword/:token', resetPassword);
@@ -43,7 +42,7 @@ router.patch('/verifyEmail/:token', verifyEmail);
 
 router.use(protect);
 
-// router.get("/logout", logout);
+router.get('/logout', logout);
 router.get('/sendVerificationEmail', sendVerificationEmail);
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);

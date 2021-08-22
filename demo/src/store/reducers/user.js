@@ -16,6 +16,7 @@ const initialState = {
   email: null,
   passwordChangedAt: null,
   id: null,
+  isAuthenticated: false,
 };
 
 const loginStart = state => {
@@ -38,6 +39,7 @@ const loginSuccess = (state, action) => {
     email: data.email,
     passwordChangedAt: data.passwordChangedAt,
     id: data.id,
+    isAuthenticated: true,
   };
 
   return updateObject(state, properties);

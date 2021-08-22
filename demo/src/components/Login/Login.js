@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import * as actionCreators from '../../store/actions/user';
 
 const Login = props => {
@@ -12,12 +13,21 @@ const Login = props => {
   };
 
   return (
-    <form className="login__form" onSubmit={handleSubmit}>
-      <input className="login__input" id="input__email" type="text" defaultValue="jack@example.io" name="email" />
-      <input className="login__input" id="input__password" type="password" defaultValue="test1234" name="password" />
-      <button>Login</button>
-    </form>
+    <>
+      {props.isAuthenticated && <Redirect to="/" />}
+      <form className="login__form" onSubmit={handleSubmit}>
+        <input className="login__input" id="input__email" type="text" defaultValue="jack@example.io" name="email" />
+        <input className="login__input" id="input__password" type="password" defaultValue="test1234" name="password" />
+        <button>Login</button>
+      </form>
+    </>
   );
+};
+
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.isAuthenticated,
+  };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -26,4 +36,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
