@@ -52,6 +52,21 @@ const loginFail = (state, action) => {
   return updateObject(state, properties);
 };
 
+const logoutStart = state => {
+  return updateObject(state, { error: null, loading: true });
+};
+
+const logoutSuccess = state => {
+  return updateObject(state, initialState);
+};
+
+const logoutFail = (state, action) => {
+  const { message, name } = action.error;
+  const error = updateObject(state.error, { message, name });
+  const properties = { loading: false, error };
+  return updateObject(state, properties);
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.LOGIN_START:
@@ -60,6 +75,12 @@ const reducer = (state = initialState, action) => {
       return loginSuccess(state, action);
     case actionTypes.LOGIN_FAIL:
       return loginFail(state, action);
+    case actionTypes.LOGOUT_START:
+      return logoutStart(state);
+    case actionTypes.LOGOUT_SUCCESS:
+      return logoutSuccess(state);
+    case actionTypes.LOGOUT_FAIL:
+      return logoutFail(state, action);
     default:
       return state;
   }

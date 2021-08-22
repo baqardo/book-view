@@ -30,7 +30,6 @@ const startLogout = () => {
 const successLogout = () => {
   return {
     type: actionTypes.LOGOUT_SUCCESS,
-    // result: 'success',
   };
 };
 
@@ -78,13 +77,13 @@ export const restoreSession = () => {
 
 export const logout = () => {
   return async dispatch => {
-    // dispatch(startLogout());
+    dispatch(startLogout());
     try {
-      const result = await axios.get('http://localhost:8080/api/v1/users/logouts', { withCredentials: true });
-      // dispatch(successLogout());
+      await axios.get('http://localhost:8080/api/v1/users/logout', { withCredentials: true });
+      dispatch(successLogout());
     } catch (err) {
       console.log(err);
-      // dispatch(failLogout(err));
+      dispatch(failLogout(err));
     }
   };
 };

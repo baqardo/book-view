@@ -13,6 +13,7 @@ import Logout from './containers/Logout/Logout';
 
 class App extends Component {
   componentDidMount() {
+    console.log(this.props.isAuthenticated);
     if (!this.props.isAuthenticated) {
       this.props.restoreSession();
     }
