@@ -7,6 +7,18 @@ const bookSchema = new mongoose.Schema(
       required: [true, 'Please provide book OLID'],
       unique: true,
     },
+    coverID: {
+      type: String,
+      required: [true, 'Please provide book cover ID'],
+    },
+    title: {
+      type: String,
+      required: [true, 'Please provide book title'],
+    },
+    author: {
+      type: String,
+      required: [true, 'Please provide book author'],
+    },
     ratingsAverage: {
       type: Number,
       default: 4.5,

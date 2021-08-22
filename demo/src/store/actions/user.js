@@ -66,7 +66,6 @@ export const restoreSession = () => {
     dispatch(startLogin());
     try {
       const result = await axios.get('http://localhost:8080/api/v1/users/me', { withCredentials: true });
-
       dispatch(successLogin(result.data.data));
     } catch (err) {
       console.log(err);

@@ -2,8 +2,8 @@ const Book = require('../models/bookModel');
 const factory = require('./handlerFactory');
 const filterObj = require('../utils/filterObj');
 
-exports.onlyOLID = (req, res, next) => {
-  const filteredBody = filterObj.holdFields(req.body, 'OLID');
+exports.onlyBasicData = (req, res, next) => {
+  const filteredBody = filterObj.holdFields(req.body, 'OLID', 'title', 'coverID', 'author');
   req.body = filteredBody;
   next();
 };

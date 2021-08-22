@@ -8,7 +8,7 @@ const {
   getBook,
   deleteBook,
   getBookByField,
-  onlyOLID,
+  onlyBasicData,
 } = require('../controllers/bookController');
 
 const { protect, restrictTo, verified } = require('../controllers/authController');
@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.use('/:bookId/users', userRouter);
 
-router.post('/autoGenerate', protect, verified, onlyOLID, createBook);
+router.post('/autoGenerate', protect, verified, onlyBasicData, createBook);
 router.route('/').get(getAllBooks).post(protect, restrictTo('admin'), createBook);
 router
   .route('/:id')

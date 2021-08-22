@@ -44,12 +44,13 @@ class BookDetails extends Component {
     });
     const data = response.data;
     const coverId = response.data.covers[0];
+    const description = data.description.value || data.description;
 
     const bookDetails = {
       cover: `http://covers.openlibrary.org/b/id/${coverId}-M.jpg`,
       title: data.title,
       publishDate: data.first_publish_date,
-      description: data.description,
+      description: description,
       subjects: data.subjects.slice(0, 10),
       loaded: true,
     };

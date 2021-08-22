@@ -10,6 +10,8 @@ import Login from './components/Login/Login';
 import { connect } from 'react-redux';
 import * as actionCreators from './store/actions/user';
 import Logout from './containers/Logout/Logout';
+import MyProfile from './containers/MyProfile/MyProfile';
+import MyBookcase from './containers/MyBookcase/MyBookcase';
 
 class App extends Component {
   componentDidMount() {
@@ -33,6 +35,12 @@ class App extends Component {
             <Logout />
           </Route>
         )}
+        <Route path="/myProfile">
+          <MyProfile />
+        </Route>
+        <Route path="/myBookcase">
+          <MyBookcase />
+        </Route>
         <Route path="/">
           <Home />
         </Route>

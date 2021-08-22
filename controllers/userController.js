@@ -38,7 +38,10 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 exports.createUser = factory.createOne(User);
 exports.updateUser = factory.updateOne(User);
 exports.getAllUsers = factory.getAll(User);
-exports.getUser = factory.getOne(User);
+exports.getUser = factory.getOne(User, {
+  path: 'wantReadBooks currentlyReadingBooks haveReadBooks likedBooks',
+  model: 'Book',
+});
 exports.deleteUser = factory.deleteOne(User);
 
 //?Operation is either add or remove

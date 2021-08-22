@@ -24,6 +24,12 @@ const Nav = props => {
         <li className="nav__list-item">
           <Link to="/logout">Logout</Link>
         </li>
+        <li className="nav__list-item">
+          <Link to="/myProfile">My Profile</Link>
+        </li>
+        <li className="nav__list-item">
+          <Link to="/myBookcase">My Bookcase</Link>
+        </li>
       </>
     );
 
