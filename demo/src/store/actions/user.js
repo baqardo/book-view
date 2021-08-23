@@ -21,25 +21,6 @@ const failLogin = err => {
   };
 };
 
-const startLogout = () => {
-  return {
-    type: actionTypes.LOGOUT_START,
-  };
-};
-
-const successLogout = () => {
-  return {
-    type: actionTypes.LOGOUT_SUCCESS,
-  };
-};
-
-const failLogout = err => {
-  return {
-    type: actionTypes.LOGOUT_FAIL,
-    error: err,
-  };
-};
-
 export const login = (email, password) => {
   return async dispatch => {
     dispatch(startLogin());
@@ -74,6 +55,25 @@ export const restoreSession = () => {
   };
 };
 
+const startLogout = () => {
+  return {
+    type: actionTypes.LOGOUT_START,
+  };
+};
+
+const successLogout = () => {
+  return {
+    type: actionTypes.LOGOUT_SUCCESS,
+  };
+};
+
+const failLogout = err => {
+  return {
+    type: actionTypes.LOGOUT_FAIL,
+    error: err,
+  };
+};
+
 export const logout = () => {
   return async dispatch => {
     dispatch(startLogout());
@@ -83,6 +83,39 @@ export const logout = () => {
     } catch (err) {
       console.log(err);
       dispatch(failLogout(err));
+    }
+  };
+};
+
+const startUpdate = () => {
+  return {
+    type: actionTypes.UPDATE_START,
+  };
+};
+
+const successUpdate = res => {
+  return {
+    type: actionTypes.UPDATE_SUCCESS,
+    result: res,
+  };
+};
+
+const failUpdate = err => {
+  return {
+    type: actionTypes.UPDATE_FAIL,
+    error: err,
+  };
+};
+
+export const updateUserData = (name, email) => {
+  return async dispatch => {
+    dispatch(startUpdate());
+    try {
+      await axios.patch('http://localhost:8080/api/v1/users/updateMe', { name, email }, { withCredentials: true });
+      dispatch(successUpdate({ name, email }));
+    } catch (err) {
+      console.log(err);
+      dispatch(failUpdate(err));
     }
   };
 };
