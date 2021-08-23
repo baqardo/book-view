@@ -7,6 +7,18 @@ class MyProfile extends Component {
     super(props);
     this.nameRef = React.createRef();
     this.emailRef = React.createRef();
+
+    this.currentPasswordRef = React.createRef();
+    this.newPasswordRef = React.createRef();
+    this.confirmPasswordRef = React.createRef();
+  }
+
+  componentDidUpdate() {
+    if (!this.props.loading && !this.props.error) {
+      this.currentPasswordRef.current.value = '';
+      this.newPasswordRef.current.value = '';
+      this.confirmPasswordRef.current.value = '';
+    }
   }
 
   handleDataChanges = () => {
@@ -14,6 +26,20 @@ class MyProfile extends Component {
     const email = this.emailRef.current.value;
 
     this.props.updateUserData(name, email);
+  };
+
+  handlePasswordChange = () => {
+    const passwordCurrent = this.currentPasswordRef.current.value;
+    const password = this.newPasswordRef.current.value;
+    const passwordConfirm = this.confirmPasswordRef.current.value;
+
+    const passwords = {
+      passwordCurrent,
+      password,
+      passwordConfirm,
+    };
+
+    this.props.updateUserPassword(passwords);
   };
 
   render() {
@@ -28,12 +54,15 @@ class MyProfile extends Component {
         <button onClick={this.handleDataChanges}>Save Changes</button>
         <br />
         <br />
-        Current password: <input id="input__current-password" name="current-password" />
+        Current password:{' '}
+        <input type="password" id="input__current-password" name="current-password" ref={this.currentPasswordRef} />
         <br />
-        New password: <input id="input__new-password" name="new-password" />
+        New password: <input type="password" id="input__new-password" name="new-password" ref={this.newPasswordRef} />
         <br />
-        Confirm password: <input id="input__confirm-password" name="confirm-password" />
+        Confirm password:{' '}
+        <input type="password" id="input__confirm-password" name="confirm-password" ref={this.confirmPasswordRef} />
         <br />
+        <button onClick={this.handlePasswordChange}>Save Changes</button>
       </div>
     );
   }
@@ -44,12 +73,15 @@ const mapStateToProps = state => {
     photo: state.photo,
     name: state.name,
     email: state.email,
+    loading: state.loading,
+    error: state.error,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     updateUserData: (name, email) => dispatch(actionCreators.updateUserData(name, email)),
+    updateUserPassword: passwords => dispatch(actionCreators.updateUserPassword(passwords)),
   };
 };
 

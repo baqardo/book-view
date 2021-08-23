@@ -119,3 +119,35 @@ export const updateUserData = (name, email) => {
     }
   };
 };
+
+const startUpdatePassword = () => {
+  return {
+    type: actionTypes.UPDATE_PASSWORD_START,
+  };
+};
+
+const successUpdatePassword = () => {
+  return {
+    type: actionTypes.UPDATE_PASSWORD_SUCCESS,
+  };
+};
+
+const failUpdatePassword = err => {
+  return {
+    type: actionTypes.UPDATE_PASSWORD_FAIL,
+    error: err,
+  };
+};
+
+export const updateUserPassword = passwords => {
+  return async dispatch => {
+    dispatch(startUpdatePassword());
+    try {
+      await axios.patch('http://localhost:8080/api/v1/users/updateMyPassword', passwords, { withCredentials: true });
+      dispatch(successUpdatePassword());
+    } catch (err) {
+      console.log(err);
+      dispatch(failUpdatePassword(err));
+    }
+  };
+};

@@ -82,6 +82,22 @@ const updateFail = (state, action) => {
   return updateObject(state, properties);
 };
 
+const updatePasswordStart = state => {
+  return updateObject(state, { error: null, loading: true });
+};
+
+const updatePasswordSuccess = state => {
+  return updateObject(state, { loading: false });
+};
+
+const updatePasswordFail = (state, action) => {
+  const message = action.error.response.data.message;
+  const { name } = action.error;
+  const error = updateObject(state.error, { message, name });
+  const properties = { loading: false, error };
+  return updateObject(state, properties);
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.LOGIN_START:
@@ -102,6 +118,12 @@ const reducer = (state = initialState, action) => {
       return updateSuccess(state, action);
     case actionTypes.UPDATE_FAIL:
       return updateFail(state, action);
+    case actionTypes.UPDATE_PASSWORD_START:
+      return updatePasswordStart(state);
+    case actionTypes.UPDATE_PASSWORD_SUCCESS:
+      return updatePasswordSuccess(state);
+    case actionTypes.UPDATE_PASSWORD_FAIL:
+      return updatePasswordFail(state, action);
     default:
       return state;
   }
