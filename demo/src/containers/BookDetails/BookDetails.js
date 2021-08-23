@@ -14,6 +14,20 @@ class BookDetails extends Component {
       id,
       author,
       loaded: false,
+      coverId: null,
+      cover: null,
+      title: null,
+      publishDate: null,
+      description: null,
+      subjects: null,
+      ratingsAverage: 4.5,
+      ratingsQuantity: 0,
+      reviews: [],
+      likes: 0,
+      wantRead: 0,
+      haveRead: 0,
+      currentlyReading: 0,
+      inDataBase: false,
     };
   }
 
@@ -48,6 +62,7 @@ class BookDetails extends Component {
 
     const bookDetails = {
       cover: `http://covers.openlibrary.org/b/id/${coverId}-M.jpg`,
+      coverId,
       title: data.title,
       publishDate: data.first_publish_date,
       description: description,
@@ -72,21 +87,27 @@ class BookDetails extends Component {
         wantRead: data.wantReadBooksQuantity,
         haveRead: data.haveReadBooksQuantity,
         currentlyReading: data.currentlyReadingBooksQuantity,
+        inDataBase: true,
       };
 
       return bookRatings;
     } catch (err) {
-      return {
-        ratingsAverage: 4.5,
-        ratingsQuantity: 0,
-        reviews: [],
-        likes: 0,
-        wantRead: 0,
-        haveRead: 0,
-        currentlyReading: 0,
-      };
+      return { inDataBase: false };
     }
   }
+
+  putNewBookToAPI = async () => {
+    try {
+      const id = this.state.id;
+      await axios.post(
+        `http://localhost:8080/api/v1/books/autoGenerate`,
+        { OLID: id, title: this.state.title, coverID: this.state.coverId, author: this.state.author },
+        { withCredentials: true }
+      );
+    } catch (err) {
+      console.log(err.response.data.message);
+    }
+  };
 
   render() {
     return (
@@ -133,6 +154,7 @@ class BookDetails extends Component {
           <br />
           Currently Reading: {this.state.currentlyReading}
           <br />
+          <button onClick={this.putNewBookToAPI}>Add Book</button>
         </div>
       )
     );
