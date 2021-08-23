@@ -41,6 +41,7 @@ exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User, {
   path: 'wantReadBooks currentlyReadingBooks haveReadBooks likedBooks',
   model: 'Book',
+  select: 'OLID author coverID',
 });
 exports.deleteUser = factory.deleteOne(User);
 
