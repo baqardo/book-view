@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import * as actionCreators from '../../store/actions/user';
+import * as actionCreators from '../../store/actions/index';
 
 const Login = props => {
   const handleSubmit = event => {
@@ -26,7 +26,7 @@ const Login = props => {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.isAuthenticated,
+    isAuthenticated: state.auth.isAuthenticated,
   };
 };
 

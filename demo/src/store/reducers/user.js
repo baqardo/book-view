@@ -2,7 +2,6 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../utils/utility';
 
 const initialState = {
-  isAuthenticated: false,
   loading: false,
   error: null,
   data: {
@@ -31,7 +30,17 @@ const userFail = (state, action) => {
   return updateObject(state, properties);
 };
 
-const loginSuccess = (state, action) => {
+const updateDataSuccess = (state, action) => {
+  const resultData = action.result;
+  const data = updateObject(state.data, {
+    name: resultData.name,
+    email: resultData.email,
+  });
+
+  return updateObject(state, { loading: false, data });
+};
+
+const loadUserSuccess = (state, action) => {
   const resultData = action.result;
   const data = updateObject(state.data, {
     id: resultData.id,
@@ -47,41 +56,25 @@ const loginSuccess = (state, action) => {
     likedBooks: [...resultData.likedBooks],
   });
 
-  return updateObject(state, { loading: false, isAuthenticated: true, data });
-};
-
-const logoutSuccess = state => {
-  return updateObject(state, initialState);
-};
-
-const updateDataSuccess = (state, action) => {
-  const resultData = action.result;
-  const data = updateObject(state.data, {
-    name: resultData.name,
-    email: resultData.email,
-  });
-
   return updateObject(state, { loading: false, data });
 };
 
-const updatePasswordSuccess = state => {
-  return updateObject(state, { loading: false });
+const removeUserSuccess = state => {
+  return updateObject(state, initialState);
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.USER_START:
+    case actionTypes.USER_ACTION_START:
       return userStart(state);
-    case actionTypes.USER_FAIL:
+    case actionTypes.USER_ACTION_FAIL:
       return userFail(state, action);
-    case actionTypes.LOGIN_SUCCESS:
-      return loginSuccess(state, action);
-    case actionTypes.LOGOUT_SUCCESS:
-      return logoutSuccess(state);
     case actionTypes.UPDATE_DATA_SUCCESS:
       return updateDataSuccess(state, action);
-    case actionTypes.UPDATE_PASSWORD_SUCCESS:
-      return updatePasswordSuccess(state);
+    case actionTypes.USER_LOAD_SUCCESS:
+      return loadUserSuccess(state, action);
+    case actionTypes.USER_REMOVE_SUCCESS:
+      return removeUserSuccess(state);
     default:
       return state;
   }

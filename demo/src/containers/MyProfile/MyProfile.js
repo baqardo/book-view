@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actionCreators from '../../store/actions/user';
+import * as actionCreators from '../../store/actions/index';
 
 class MyProfile extends Component {
   constructor(props) {
@@ -70,11 +70,11 @@ class MyProfile extends Component {
 
 const mapStateToProps = state => {
   return {
-    photo: state.data.photo,
-    name: state.data.name,
-    email: state.data.email,
-    loading: state.data.loading,
-    error: state.data.error,
+    photo: state.user.data.photo,
+    name: state.user.data.name,
+    email: state.user.data.email,
+    loading: state.user.data.loading,
+    error: state.user.data.error,
   };
 };
 

@@ -53,10 +53,10 @@ class MyBookcase extends Component {
 
 const mapStateToProps = state => {
   return {
-    wantReadBooks: state.data.wantReadBooks,
-    currentlyReadingBooks: state.data.currentlyReadingBooks,
-    haveReadBooks: state.data.haveReadBooks,
-    likedBooks: state.data.likedBooks,
+    wantReadBooks: state.user.data.wantReadBooks,
+    currentlyReadingBooks: state.user.data.currentlyReadingBooks,
+    haveReadBooks: state.user.data.haveReadBooks,
+    likedBooks: state.user.data.likedBooks,
   };
 };
 

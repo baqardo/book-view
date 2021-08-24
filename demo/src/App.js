@@ -8,18 +8,21 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import BookDetails from './containers/BookDetails/BookDetails';
 import Login from './components/Login/Login';
 import { connect } from 'react-redux';
-import * as actionCreators from './store/actions/user';
+import * as actionCreators from './store/actions/index';
 import Logout from './containers/Logout/Logout';
 import MyProfile from './containers/MyProfile/MyProfile';
 import MyBookcase from './containers/MyBookcase/MyBookcase';
 
 class App extends Component {
-  componentDidMount() {
-    console.log(this.props.isAuthenticated);
-    if (!this.props.isAuthenticated) {
-      this.props.restoreSession();
-    }
+  async componentDidMount() {
+    this.restoreSession();
   }
+
+  restoreSession = async () => {
+    if (!this.props.isAuthenticated) {
+      await this.props.restoreSession();
+    }
+  };
 
   render() {
     let routes = (
@@ -62,7 +65,7 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.isAuthenticated,
+    isAuthenticated: state.auth.isAuthenticated,
   };
 };
 

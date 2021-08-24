@@ -3,14 +3,14 @@ import * as queries from '../../utils/axiosQueries';
 
 const startUser = () => {
   return {
-    type: actionTypes.USER_START,
+    type: actionTypes.USER_ACTION_START,
   };
 };
 
 const failUser = err => {
   const { message, status } = err.response.data;
   return {
-    type: actionTypes.USER_FAIL,
+    type: actionTypes.USER_ACTION_FAIL,
     error: {
       message,
       status,
@@ -18,54 +18,30 @@ const failUser = err => {
   };
 };
 
-const successLogin = res => {
+const successLoadUser = res => {
   return {
-    type: actionTypes.LOGIN_SUCCESS,
+    type: actionTypes.USER_LOAD_SUCCESS,
     result: res,
   };
 };
 
-export const login = (email, password) => {
+export const loadUser = data => {
   return async dispatch => {
     dispatch(startUser());
-    try {
-      const data = { email, password };
-      const result = await queries.login(data);
-
-      dispatch(successLogin(result.data.data));
-    } catch (err) {
-      dispatch(failUser(err));
-    }
+    dispatch(successLoadUser(data));
   };
 };
 
-export const restoreSession = () => {
-  return async dispatch => {
-    dispatch(startUser());
-    try {
-      const result = await queries.restoreSession();
-      dispatch(successLogin(result.data.data));
-    } catch (err) {
-      dispatch(failUser(err));
-    }
-  };
-};
-
-const successLogout = () => {
+const successRemoveUser = () => {
   return {
-    type: actionTypes.LOGOUT_SUCCESS,
+    type: actionTypes.USER_REMOVE_SUCCESS,
   };
 };
 
-export const logout = () => {
+export const removeUser = () => {
   return async dispatch => {
     dispatch(startUser());
-    try {
-      await queries.logout();
-      dispatch(successLogout());
-    } catch (err) {
-      dispatch(failUser(err));
-    }
+    dispatch(successRemoveUser());
   };
 };
 
@@ -83,24 +59,6 @@ export const updateUserData = (name, email) => {
       const data = { name, email };
       await queries.patchUserData(data);
       dispatch(successUpdateData(data));
-    } catch (err) {
-      dispatch(failUser(err));
-    }
-  };
-};
-
-const successUpdatePassword = () => {
-  return {
-    type: actionTypes.UPDATE_PASSWORD_SUCCESS,
-  };
-};
-
-export const updateUserPassword = passwords => {
-  return async dispatch => {
-    dispatch(startUser());
-    try {
-      await queries.patchPassword(passwords);
-      dispatch(successUpdatePassword());
     } catch (err) {
       dispatch(failUser(err));
     }
