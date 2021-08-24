@@ -69,9 +69,9 @@ export const logout = () => {
   };
 };
 
-const successUpdate = res => {
+const successUpdateData = res => {
   return {
-    type: actionTypes.UPDATE_SUCCESS,
+    type: actionTypes.UPDATE_DATA_SUCCESS,
     result: res,
   };
 };
@@ -82,7 +82,7 @@ export const updateUserData = (name, email) => {
     try {
       const data = { name, email };
       await queries.patchUserData(data);
-      dispatch(successUpdate(data));
+      dispatch(successUpdateData(data));
     } catch (err) {
       dispatch(failUser(err));
     }

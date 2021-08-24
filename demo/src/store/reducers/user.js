@@ -2,20 +2,22 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../utils/utility';
 
 const initialState = {
+  isAuthenticated: false,
   loading: false,
   error: null,
-  photo: null,
-  role: null,
-  verified: null,
-  wantReadBooks: [],
-  currentlyReadingBooks: [],
-  haveReadBooks: [],
-  likedBooks: [],
-  name: null,
-  email: null,
-  passwordChangedAt: null,
-  id: null,
-  isAuthenticated: false,
+  data: {
+    id: null,
+    name: null,
+    email: null,
+    photo: null,
+    role: null,
+    verified: null,
+    passwordChangedAt: null,
+    wantReadBooks: [],
+    currentlyReadingBooks: [],
+    haveReadBooks: [],
+    likedBooks: [],
+  },
 };
 
 const userStart = state => {
@@ -30,34 +32,36 @@ const userFail = (state, action) => {
 };
 
 const loginSuccess = (state, action) => {
-  const data = action.result;
-  const properties = {
-    loading: false,
-    photo: data.photo,
-    role: data.role,
-    verified: data.verified,
-    wantReadBooks: [...data.wantReadBooks],
-    currentlyReadingBooks: [...data.currentlyReadingBooks],
-    haveReadBooks: [...data.haveReadBooks],
-    likedBooks: [...data.likedBooks],
-    name: data.name,
-    email: data.email,
-    passwordChangedAt: data.passwordChangedAt,
-    id: data.id,
-    isAuthenticated: true,
-  };
+  const resultData = action.result;
+  const data = updateObject(state.data, {
+    id: resultData.id,
+    name: resultData.name,
+    email: resultData.email,
+    photo: resultData.photo,
+    role: resultData.role,
+    verified: resultData.verified,
+    passwordChangedAt: resultData.passwordChangedAt,
+    wantReadBooks: [...resultData.wantReadBooks],
+    currentlyReadingBooks: [...resultData.currentlyReadingBooks],
+    haveReadBooks: [...resultData.haveReadBooks],
+    likedBooks: [...resultData.likedBooks],
+  });
 
-  return updateObject(state, properties);
+  return updateObject(state, { loading: false, isAuthenticated: true, data });
 };
 
 const logoutSuccess = state => {
   return updateObject(state, initialState);
 };
 
-const updateSuccess = (state, action) => {
-  const { name, email } = action.result;
+const updateDataSuccess = (state, action) => {
+  const resultData = action.result;
+  const data = updateObject(state.data, {
+    name: resultData.name,
+    email: resultData.email,
+  });
 
-  return updateObject(state, { loading: false, name, email });
+  return updateObject(state, { loading: false, data });
 };
 
 const updatePasswordSuccess = state => {
@@ -74,8 +78,8 @@ const reducer = (state = initialState, action) => {
       return loginSuccess(state, action);
     case actionTypes.LOGOUT_SUCCESS:
       return logoutSuccess(state);
-    case actionTypes.UPDATE_SUCCESS:
-      return updateSuccess(state, action);
+    case actionTypes.UPDATE_DATA_SUCCESS:
+      return updateDataSuccess(state, action);
     case actionTypes.UPDATE_PASSWORD_SUCCESS:
       return updatePasswordSuccess(state);
     default:

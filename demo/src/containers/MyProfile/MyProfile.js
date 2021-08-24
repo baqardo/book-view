@@ -70,11 +70,11 @@ class MyProfile extends Component {
 
 const mapStateToProps = state => {
   return {
-    photo: state.photo,
-    name: state.name,
-    email: state.email,
-    loading: state.loading,
-    error: state.error,
+    photo: state.data.photo,
+    name: state.data.name,
+    email: state.data.email,
+    loading: state.data.loading,
+    error: state.data.error,
   };
 };
 
