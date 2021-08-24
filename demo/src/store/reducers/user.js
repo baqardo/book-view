@@ -18,8 +18,15 @@ const initialState = {
   isAuthenticated: false,
 };
 
-const loginStart = state => {
+const userStart = state => {
   return updateObject(state, { error: null, loading: true });
+};
+
+const userFail = (state, action) => {
+  const { message, status } = action.error;
+  const error = updateObject(state.error, { message, status });
+  const properties = { loading: false, error };
+  return updateObject(state, properties);
 };
 
 const loginSuccess = (state, action) => {
@@ -43,30 +50,8 @@ const loginSuccess = (state, action) => {
   return updateObject(state, properties);
 };
 
-const loginFail = (state, action) => {
-  const { message, name } = action.error;
-  const error = updateObject(state.error, { message, name });
-  const properties = { loading: false, error };
-  return updateObject(state, properties);
-};
-
-const logoutStart = state => {
-  return updateObject(state, { error: null, loading: true });
-};
-
 const logoutSuccess = state => {
   return updateObject(state, initialState);
-};
-
-const logoutFail = (state, action) => {
-  const { message, name } = action.error;
-  const error = updateObject(state.error, { message, name });
-  const properties = { loading: false, error };
-  return updateObject(state, properties);
-};
-
-const updateStart = state => {
-  return updateObject(state, { error: null, loading: true });
 };
 
 const updateSuccess = (state, action) => {
@@ -75,55 +60,24 @@ const updateSuccess = (state, action) => {
   return updateObject(state, { loading: false, name, email });
 };
 
-const updateFail = (state, action) => {
-  const { message, name } = action.error;
-  const error = updateObject(state.error, { message, name });
-  const properties = { loading: false, error };
-  return updateObject(state, properties);
-};
-
-const updatePasswordStart = state => {
-  return updateObject(state, { error: null, loading: true });
-};
-
 const updatePasswordSuccess = state => {
   return updateObject(state, { loading: false });
 };
 
-const updatePasswordFail = (state, action) => {
-  const message = action.error.response.data.message;
-  const { name } = action.error;
-  const error = updateObject(state.error, { message, name });
-  const properties = { loading: false, error };
-  return updateObject(state, properties);
-};
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.LOGIN_START:
-      return loginStart(state);
+    case actionTypes.USER_START:
+      return userStart(state);
+    case actionTypes.USER_FAIL:
+      return userFail(state, action);
     case actionTypes.LOGIN_SUCCESS:
       return loginSuccess(state, action);
-    case actionTypes.LOGIN_FAIL:
-      return loginFail(state, action);
-    case actionTypes.LOGOUT_START:
-      return logoutStart(state);
     case actionTypes.LOGOUT_SUCCESS:
       return logoutSuccess(state);
-    case actionTypes.LOGOUT_FAIL:
-      return logoutFail(state, action);
-    case actionTypes.UPDATE_START:
-      return updateStart(state);
     case actionTypes.UPDATE_SUCCESS:
       return updateSuccess(state, action);
-    case actionTypes.UPDATE_FAIL:
-      return updateFail(state, action);
-    case actionTypes.UPDATE_PASSWORD_START:
-      return updatePasswordStart(state);
     case actionTypes.UPDATE_PASSWORD_SUCCESS:
       return updatePasswordSuccess(state);
-    case actionTypes.UPDATE_PASSWORD_FAIL:
-      return updatePasswordFail(state, action);
     default:
       return state;
   }
