@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import './BookDetails.scss';
 import { withRouter } from 'react-router';
-import axios from 'axios';
-import AsyncError from '../../utils/asyncError';
 import withErrorHandler from '../../hoc/withErrorHandler';
+import * as queries from '../../utils/axiosQueries';
 
 class BookDetails extends Component {
   constructor(props) {
@@ -53,9 +52,7 @@ class BookDetails extends Component {
 
   async loadBookDataFromExternalAPI() {
     const id = this.state.id;
-    const response = await axios.get(`https://openlibrary.org/works/${id}.json`).catch(err => {
-      throw new AsyncError(err.response.statusText);
-    });
+    const response = await queries.getExternalBook(id);
     const data = response.data;
     const coverId = response.data.covers[0];
     const description = data.description.value || data.description;
@@ -76,7 +73,7 @@ class BookDetails extends Component {
   async loadBookDataFromInternalAPI() {
     try {
       const id = this.state.id;
-      const response = await axios.get(`http://localhost:8080/api/v1/books/OLID/${id}`);
+      const response = await queries.getBook(id);
       const { data } = response.data;
 
       const bookRatings = {
@@ -99,11 +96,8 @@ class BookDetails extends Component {
   putNewBookToAPI = async () => {
     try {
       const id = this.state.id;
-      await axios.post(
-        `http://localhost:8080/api/v1/books/autoGenerate`,
-        { OLID: id, title: this.state.title, coverID: this.state.coverId, author: this.state.author },
-        { withCredentials: true }
-      );
+      const data = { OLID: id, title: this.state.title, coverID: this.state.coverId, author: this.state.author };
+      await queries.postBook(data);
     } catch (err) {
       console.log(err.response.data.message);
     }

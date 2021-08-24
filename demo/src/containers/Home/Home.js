@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import Book from '../../components/Book/Book';
 import './Home.scss';
+import * as queries from '../../utils/axiosQueries';
 
 class Home extends Component {
   state = { data: null };
@@ -18,7 +18,7 @@ class Home extends Component {
   }
 
   getBooksList = async () => {
-    const response = await axios.get('https://openlibrary.org/subjects/literature.json?limit=30');
+    const response = await queries.getExternalBookList();
     const data = response.data;
 
     if (response.status !== 200) {
@@ -33,7 +33,6 @@ class Home extends Component {
         author: work.authors[0].name,
       };
     });
-    console.log(data);
 
     return works;
   };

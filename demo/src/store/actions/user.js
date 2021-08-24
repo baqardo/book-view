@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import axios from 'axios';
+import * as queries from '../../utils/axiosQueries';
 
 const startLogin = () => {
   return {
@@ -25,14 +25,8 @@ export const login = (email, password) => {
   return async dispatch => {
     dispatch(startLogin());
     try {
-      const result = await axios.post(
-        'http://localhost:8080/api/v1/users/login',
-        {
-          email,
-          password,
-        },
-        { withCredentials: true }
-      );
+      const data = { email, password };
+      const result = await queries.login(data);
 
       dispatch(successLogin(result.data.data));
     } catch (err) {
@@ -46,7 +40,7 @@ export const restoreSession = () => {
   return async dispatch => {
     dispatch(startLogin());
     try {
-      const result = await axios.get('http://localhost:8080/api/v1/users/me', { withCredentials: true });
+      const result = await queries.restoreSession();
       dispatch(successLogin(result.data.data));
     } catch (err) {
       console.log(err);
@@ -78,7 +72,7 @@ export const logout = () => {
   return async dispatch => {
     dispatch(startLogout());
     try {
-      await axios.get('http://localhost:8080/api/v1/users/logout', { withCredentials: true });
+      await queries.logout();
       dispatch(successLogout());
     } catch (err) {
       console.log(err);
@@ -111,8 +105,9 @@ export const updateUserData = (name, email) => {
   return async dispatch => {
     dispatch(startUpdate());
     try {
-      await axios.patch('http://localhost:8080/api/v1/users/updateMe', { name, email }, { withCredentials: true });
-      dispatch(successUpdate({ name, email }));
+      const data = { name, email };
+      await queries.patchUserData(data);
+      dispatch(successUpdate(data));
     } catch (err) {
       console.log(err);
       dispatch(failUpdate(err));
@@ -143,7 +138,7 @@ export const updateUserPassword = passwords => {
   return async dispatch => {
     dispatch(startUpdatePassword());
     try {
-      await axios.patch('http://localhost:8080/api/v1/users/updateMyPassword', passwords, { withCredentials: true });
+      await queries.patchPassword(passwords);
       dispatch(successUpdatePassword());
     } catch (err) {
       console.log(err);
