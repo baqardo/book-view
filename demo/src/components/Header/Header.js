@@ -4,7 +4,7 @@ import './Header.scss';
 
 const Header = props => (
   <header className="header">
-    <Nav />
+    <Nav isAuthenticated={props.isAuthenticated} />
   </header>
 );
 

@@ -1,7 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import * as actionCreators from '../../store/actions/index';
 
 const Login = props => {
   const handleSubmit = event => {
@@ -24,16 +22,4 @@ const Login = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    isAuthenticated: state.auth.isAuthenticated,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onLogin: (email, password) => dispatch(actionCreators.login(email, password)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;

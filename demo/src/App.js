@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import './App.scss';
-import Footer from './components/Footer/Footer';
-import Header from './components/Header/Header';
-import Home from './containers/Home/Home';
-
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import BookDetails from './containers/BookDetails/BookDetails';
-import Login from './components/Login/Login';
 import { connect } from 'react-redux';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import './App.scss';
+
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
+import Login from './components/Login/Login';
+import Logout from './components/Logout/Logout';
+import MyBookcase from './components/MyBookcase/MyBookcase';
+import MyProfile from './components/MyProfile/MyProfile';
+
+import Home from './containers/Home/Home';
+import BookDetails from './containers/BookDetails/BookDetails';
+
 import * as actionCreators from './store/actions/index';
-import Logout from './containers/Logout/Logout';
-import MyProfile from './containers/MyProfile/MyProfile';
-import MyBookcase from './containers/MyBookcase/MyBookcase';
 
 class App extends Component {
   async componentDidMount() {
@@ -31,18 +33,22 @@ class App extends Component {
           <BookDetails />
         </Route>
         <Route path="/login">
-          <Login />
+          <Login onLogin={this.props.onLogin} isAuthenticated={this.props.isAuthenticated} />
         </Route>
         {this.props.isAuthenticated && (
           <Route path="/logout">
-            <Logout />
+            <Logout onLogout={this.props.onLogout} />
           </Route>
         )}
         <Route path="/myProfile">
-          <MyProfile />
+          <MyProfile
+            userData={this.props.userData}
+            onUpdateData={this.props.updateUserData}
+            onUpdatePassword={this.props.updateUserPassword}
+          />
         </Route>
         <Route path="/myBookcase">
-          <MyBookcase />
+          <MyBookcase booksLists={this.props.booksLists} />
         </Route>
         <Route path="/">
           <Home />
@@ -54,7 +60,7 @@ class App extends Component {
     return (
       <Router>
         <div className="app">
-          <Header />
+          <Header isAuthenticated={this.props.isAuthenticated} />
           {routes}
           <Footer />
         </div>
@@ -66,12 +72,29 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
+    booksLists: {
+      wantReadBooks: state.user.data.wantReadBooks,
+      currentlyReadingBooks: state.user.data.currentlyReadingBooks,
+      haveReadBooks: state.user.data.haveReadBooks,
+      likedBooks: state.user.data.likedBooks,
+    },
+    userData: {
+      photo: state.user.data.photo,
+      name: state.user.data.name,
+      email: state.user.data.email,
+      loading: state.user.loading,
+      error: state.user.error,
+    },
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     restoreSession: () => dispatch(actionCreators.restoreSession()),
+    onLogin: (email, password) => dispatch(actionCreators.login(email, password)),
+    onLogout: () => dispatch(actionCreators.logout()),
+    updateUserData: (name, email) => dispatch(actionCreators.updateUserData(name, email)),
+    updateUserPassword: passwords => dispatch(actionCreators.updateUserPassword(passwords)),
   };
 };
 
