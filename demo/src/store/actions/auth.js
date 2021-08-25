@@ -2,20 +2,20 @@ import * as actionTypes from './actionTypes';
 import * as queries from '../../utils/axiosQueries';
 import { loadUser, removeUser } from './user';
 
-export const startAuth = () => {
+const startAuth = () => {
   return {
     type: actionTypes.AUTH_ACTION_START,
   };
 };
 
-export const failAuth = err => {
+const failAuth = err => {
   return {
     type: actionTypes.AUTH_ACTION_FAIL,
     error: err.response.data,
   };
 };
 
-export const successLogin = () => {
+const successLogin = () => {
   return {
     type: actionTypes.LOGIN_SUCCESS,
   };

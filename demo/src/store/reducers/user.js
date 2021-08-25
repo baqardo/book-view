@@ -11,7 +11,6 @@ const initialState = {
     photo: null,
     role: null,
     verified: null,
-    passwordChangedAt: null,
     wantReadBooks: [],
     currentlyReadingBooks: [],
     haveReadBooks: [],
@@ -24,17 +23,14 @@ const userStart = state => {
 };
 
 const userFail = (state, action) => {
-  const { message, status } = action.error;
-  const error = updateObject(state.error, { message, status });
-  const properties = { loading: false, error };
-  return updateObject(state, properties);
+  const error = updateObject(state.error, action.error);
+  return updateObject(state, { loading: false, error });
 };
 
 const updateDataSuccess = (state, action) => {
-  const resultData = action.result;
   const data = updateObject(state.data, {
-    name: resultData.name,
-    email: resultData.email,
+    name: action.result.name,
+    email: action.result.email,
   });
 
   return updateObject(state, { loading: false, data });
@@ -49,7 +45,6 @@ const loadUserSuccess = (state, action) => {
     photo: resultData.photo,
     role: resultData.role,
     verified: resultData.verified,
-    passwordChangedAt: resultData.passwordChangedAt,
     wantReadBooks: [...resultData.wantReadBooks],
     currentlyReadingBooks: [...resultData.currentlyReadingBooks],
     haveReadBooks: [...resultData.haveReadBooks],

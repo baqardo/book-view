@@ -1,2 +1,2 @@
-export { failAuth, login, logout, restoreSession, startAuth, successLogin, updateUserPassword } from './auth';
-export { loadUser, updateUserData } from './user';
+export { login, logout, restoreSession, updateUserPassword } from './auth';
+export { loadUser, removeUser, updateUserData } from './user';

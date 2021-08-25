@@ -12,10 +12,8 @@ const authStart = state => {
 };
 
 const authFail = (state, action) => {
-  const { message, status } = action.error;
-  const error = updateObject(state.error, { message, status });
-  const properties = { loading: false, error };
-  return updateObject(state, properties);
+  const error = updateObject(state.error, action.error);
+  return updateObject(state, { loading: false, error });
 };
 
 const loginSuccess = state => {
