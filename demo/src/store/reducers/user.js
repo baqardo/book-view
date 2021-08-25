@@ -27,15 +27,6 @@ const userFail = (state, action) => {
   return updateObject(state, { loading: false, error });
 };
 
-const updateDataSuccess = (state, action) => {
-  const data = updateObject(state.data, {
-    name: action.result.name,
-    email: action.result.email,
-  });
-
-  return updateObject(state, { loading: false, data });
-};
-
 const loadUserSuccess = (state, action) => {
   const resultData = action.result;
   const data = updateObject(state.data, {
@@ -58,18 +49,33 @@ const removeUserSuccess = state => {
   return updateObject(state, initialState);
 };
 
+const updateDataSuccess = (state, action) => {
+  const data = updateObject(state.data, {
+    name: action.result.name,
+    email: action.result.email,
+  });
+
+  return updateObject(state, { loading: false, data });
+};
+
+const updatePasswordSuccess = state => {
+  return updateObject(state, { loading: false });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.USER_ACTION_START:
       return userStart(state);
     case actionTypes.USER_ACTION_FAIL:
       return userFail(state, action);
-    case actionTypes.UPDATE_DATA_SUCCESS:
-      return updateDataSuccess(state, action);
     case actionTypes.USER_LOAD_SUCCESS:
       return loadUserSuccess(state, action);
     case actionTypes.USER_REMOVE_SUCCESS:
       return removeUserSuccess(state);
+    case actionTypes.UPDATE_DATA_SUCCESS:
+      return updateDataSuccess(state, action);
+    case actionTypes.UPDATE_PASSWORD_SUCCESS:
+      return updatePasswordSuccess(state);
     default:
       return state;
   }

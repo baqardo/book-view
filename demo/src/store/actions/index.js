@@ -1,2 +1,2 @@
-export { login, logout, restoreSession, updateUserPassword } from './auth';
-export { loadUser, removeUser, updateUserData } from './user';
+export { login, logout, restoreSession } from './auth';
+export { loadUser, removeUser, updateUserData, updateUserPassword } from './user';

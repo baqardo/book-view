@@ -34,6 +34,12 @@ const successUpdateData = res => {
   };
 };
 
+const successUpdatePassword = () => {
+  return {
+    type: actionTypes.UPDATE_PASSWORD_SUCCESS,
+  };
+};
+
 export const loadUser = data => {
   return async dispatch => {
     dispatch(startUser());
@@ -55,6 +61,18 @@ export const updateUserData = (name, email) => {
       const data = { name, email };
       await queries.patchUserData(data);
       dispatch(successUpdateData(data));
+    } catch (err) {
+      dispatch(failUser(err));
+    }
+  };
+};
+
+export const updateUserPassword = passwords => {
+  return async dispatch => {
+    dispatch(startUser());
+    try {
+      await queries.patchPassword(passwords);
+      dispatch(successUpdatePassword());
     } catch (err) {
       dispatch(failUser(err));
     }

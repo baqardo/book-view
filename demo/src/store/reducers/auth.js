@@ -24,10 +24,6 @@ const logoutSuccess = state => {
   return updateObject(state, initialState);
 };
 
-const updatePasswordSuccess = state => {
-  return updateObject(state, { loading: false });
-};
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_ACTION_START:
@@ -38,8 +34,7 @@ const reducer = (state = initialState, action) => {
       return loginSuccess(state);
     case actionTypes.LOGOUT_SUCCESS:
       return logoutSuccess(state);
-    case actionTypes.UPDATE_PASSWORD_SUCCESS:
-      return updatePasswordSuccess(state);
+
     default:
       return state;
   }

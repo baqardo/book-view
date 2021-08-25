@@ -27,12 +27,6 @@ const successLogout = () => {
   };
 };
 
-const successUpdatePassword = () => {
-  return {
-    type: actionTypes.UPDATE_PASSWORD_SUCCESS,
-  };
-};
-
 export const login = (email, password) => {
   return async dispatch => {
     dispatch(startAuth());
@@ -67,18 +61,6 @@ export const logout = () => {
       await queries.logout();
       dispatch(successLogout());
       dispatch(removeUser());
-    } catch (err) {
-      dispatch(failAuth(err));
-    }
-  };
-};
-
-export const updateUserPassword = passwords => {
-  return async dispatch => {
-    dispatch(startAuth());
-    try {
-      await queries.patchPassword(passwords);
-      dispatch(successUpdatePassword());
     } catch (err) {
       dispatch(failAuth(err));
     }
