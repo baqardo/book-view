@@ -19,7 +19,7 @@ class App extends Component {
   }
 
   restoreSession = async () => {
-    if (!this.props.isAuthenticated) {
+    if (!this.props.isAuthenticated && document.cookie.indexOf('session') >= 0) {
       await this.props.restoreSession();
     }
   };

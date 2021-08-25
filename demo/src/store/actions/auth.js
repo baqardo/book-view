@@ -9,13 +9,9 @@ export const startAuth = () => {
 };
 
 export const failAuth = err => {
-  const { message, status } = err.response.data;
   return {
     type: actionTypes.AUTH_ACTION_FAIL,
-    error: {
-      message,
-      status,
-    },
+    error: err.response.data,
   };
 };
 
@@ -41,8 +37,7 @@ export const login = (email, password) => {
   return async dispatch => {
     dispatch(startAuth());
     try {
-      const data = { email, password };
-      const result = await queries.login(data);
+      const result = await queries.login({ email, password });
 
       dispatch(successLogin());
       dispatch(loadUser(result.data.data));
