@@ -3,7 +3,6 @@ import { updateObject } from '../../utils/utility';
 
 const initialState = {
   loading: false,
-  error: null,
   data: {
     id: null,
     name: null,
@@ -19,12 +18,7 @@ const initialState = {
 };
 
 const userStart = state => {
-  return updateObject(state, { error: null, loading: true });
-};
-
-const userFail = (state, action) => {
-  const error = updateObject(state.error, action.error);
-  return updateObject(state, { loading: false, error });
+  return updateObject(state, { loading: true });
 };
 
 const loadUserSuccess = (state, action) => {
@@ -66,8 +60,6 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.USER_ACTION_START:
       return userStart(state);
-    case actionTypes.USER_ACTION_FAIL:
-      return userFail(state, action);
     case actionTypes.USER_LOAD_SUCCESS:
       return loadUserSuccess(state, action);
     case actionTypes.USER_REMOVE_SUCCESS:

@@ -14,6 +14,7 @@ import Home from './containers/Home/Home';
 import BookDetails from './containers/BookDetails/BookDetails';
 
 import * as actionCreators from './store/actions/index';
+import AsyncErrorHandler from './hoc/AsyncErrorHandler';
 
 class App extends Component {
   async componentDidMount() {
@@ -43,6 +44,7 @@ class App extends Component {
         <Route path="/myProfile">
           <MyProfile
             userData={this.props.userData}
+            error={this.props.errors.asyncError}
             onUpdateData={this.props.updateUserData}
             onUpdatePassword={this.props.updateUserPassword}
           />
@@ -60,9 +62,11 @@ class App extends Component {
     return (
       <Router>
         <div className="app">
-          <Header isAuthenticated={this.props.isAuthenticated} />
-          {routes}
-          <Footer />
+          <AsyncErrorHandler asyncError={this.props.errors.asyncError}>
+            <Header isAuthenticated={this.props.isAuthenticated} />
+            {routes}
+            <Footer />
+          </AsyncErrorHandler>
         </div>
       </Router>
     );
@@ -83,7 +87,9 @@ const mapStateToProps = state => {
       name: state.user.data.name,
       email: state.user.data.email,
       loading: state.user.loading,
-      error: state.user.error,
+    },
+    errors: {
+      asyncError: state.error.asyncError,
     },
   };
 };

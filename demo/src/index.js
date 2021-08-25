@@ -9,12 +9,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import userReducer from './store/reducers/user';
 import authReducer from './store/reducers/auth';
+import errorReducer from './store/reducers/error';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
   user: userReducer,
   auth: authReducer,
+  error: errorReducer,
 });
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './BookDetails.scss';
 import { withRouter } from 'react-router';
-import withErrorHandler from '../../hoc/withErrorHandler';
 import * as queries from '../../utils/axiosQueries';
 
 class BookDetails extends Component {
@@ -155,4 +154,4 @@ class BookDetails extends Component {
   }
 }
 
-export default withRouter(withErrorHandler(BookDetails));
+export default withRouter(BookDetails);

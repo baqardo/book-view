@@ -4,16 +4,10 @@ import { updateObject } from '../../utils/utility';
 const initialState = {
   isAuthenticated: false,
   loading: false,
-  error: null,
 };
 
 const authStart = state => {
-  return updateObject(state, { error: null, loading: true });
-};
-
-const authFail = (state, action) => {
-  const error = updateObject(state.error, action.error);
-  return updateObject(state, { loading: false, error });
+  return updateObject(state, { loading: true });
 };
 
 const loginSuccess = state => {
@@ -28,8 +22,6 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_ACTION_START:
       return authStart(state);
-    case actionTypes.AUTH_ACTION_FAIL:
-      return authFail(state, action);
     case actionTypes.LOGIN_SUCCESS:
       return loginSuccess(state);
     case actionTypes.LOGOUT_SUCCESS:

@@ -1,16 +1,10 @@
 import * as actionTypes from './actionTypes';
 import * as queries from '../../utils/axiosQueries';
+import { addAsyncError, removeAsyncError } from './error';
 
 const startUser = () => {
   return {
     type: actionTypes.USER_ACTION_START,
-  };
-};
-
-const failUser = err => {
-  return {
-    type: actionTypes.USER_ACTION_FAIL,
-    error: err.response.data,
   };
 };
 
@@ -41,14 +35,14 @@ const successUpdatePassword = () => {
 };
 
 export const loadUser = data => {
-  return async dispatch => {
+  return dispatch => {
     dispatch(startUser());
     dispatch(successLoadUser(data));
   };
 };
 
 export const removeUser = () => {
-  return async dispatch => {
+  return dispatch => {
     dispatch(startUser());
     dispatch(successRemoveUser());
   };
@@ -57,12 +51,13 @@ export const removeUser = () => {
 export const updateUserData = (name, email) => {
   return async dispatch => {
     dispatch(startUser());
+    dispatch(removeAsyncError());
     try {
       const data = { name, email };
       await queries.patchUserData(data);
       dispatch(successUpdateData(data));
     } catch (err) {
-      dispatch(failUser(err));
+      dispatch(addAsyncError(err));
     }
   };
 };
@@ -70,11 +65,12 @@ export const updateUserData = (name, email) => {
 export const updateUserPassword = passwords => {
   return async dispatch => {
     dispatch(startUser());
+    dispatch(removeAsyncError());
     try {
       await queries.patchPassword(passwords);
       dispatch(successUpdatePassword());
     } catch (err) {
-      dispatch(failUser(err));
+      dispatch(addAsyncError(err));
     }
   };
 };
