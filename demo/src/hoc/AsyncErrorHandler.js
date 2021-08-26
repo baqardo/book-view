@@ -1,7 +1,9 @@
-import React from 'react';
+import { useEffect } from 'react';
 
-const AsyncErrorHandler = ({ children, asyncError }) => {
-  if (asyncError) console.log(asyncError.message);
+const AsyncErrorHandler = ({ children, error }) => {
+  useEffect(() => {
+    if (error) console.log(error.message);
+  }, [error]);
 
   return children;
 };

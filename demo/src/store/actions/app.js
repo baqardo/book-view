@@ -7,8 +7,14 @@ export const addAsyncError = err => {
   };
 };
 
-export const removeAsyncError = () => {
+export const startLoading = () => {
   return {
-    type: actionTypes.REMOVE_ASYNC_ERROR,
+    type: actionTypes.START_LOADING,
+  };
+};
+
+export const endLoading = () => {
+  return {
+    type: actionTypes.END_LOADING,
   };
 };

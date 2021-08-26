@@ -9,7 +9,7 @@ const MyProfile = props => {
   const confirmPasswordRef = useRef();
 
   useEffect(() => {
-    if (!props.userData.loading && !props.error) {
+    if (!props.loading && !props.error) {
       currentPasswordRef.current.value = '';
       newPasswordRef.current.value = '';
       confirmPasswordRef.current.value = '';

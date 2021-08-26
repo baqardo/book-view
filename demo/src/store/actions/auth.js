@@ -1,13 +1,7 @@
 import * as actionTypes from './actionTypes';
 import * as queries from '../../utils/axiosQueries';
 import { loadUser, removeUser } from './user';
-import { addAsyncError, removeAsyncError } from './error';
-
-const startAuth = () => {
-  return {
-    type: actionTypes.AUTH_ACTION_START,
-  };
-};
+import { addAsyncError, startLoading, endLoading } from './app';
 
 const successLogin = () => {
   return {
@@ -23,8 +17,7 @@ const successLogout = () => {
 
 export const login = (email, password) => {
   return async dispatch => {
-    dispatch(startAuth());
-    dispatch(removeAsyncError());
+    dispatch(startLoading());
     try {
       const result = await queries.login({ email, password });
 
@@ -33,13 +26,13 @@ export const login = (email, password) => {
     } catch (err) {
       dispatch(addAsyncError(err));
     }
+    dispatch(endLoading());
   };
 };
 
 export const restoreSession = () => {
   return async dispatch => {
-    dispatch(startAuth());
-    dispatch(removeAsyncError());
+    dispatch(startLoading());
     try {
       const result = await queries.restoreSession();
       dispatch(successLogin());
@@ -47,13 +40,13 @@ export const restoreSession = () => {
     } catch (err) {
       dispatch(addAsyncError(err));
     }
+    dispatch(endLoading());
   };
 };
 
 export const logout = () => {
   return async dispatch => {
-    dispatch(startAuth());
-    dispatch(removeAsyncError());
+    dispatch(startLoading());
     try {
       await queries.logout();
       dispatch(successLogout());
@@ -61,5 +54,6 @@ export const logout = () => {
     } catch (err) {
       dispatch(addAsyncError(err));
     }
+    dispatch(endLoading());
   };
 };

@@ -2,28 +2,21 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../utils/utility';
 
 const initialState = {
-  loading: false,
-  data: {
-    id: null,
-    name: null,
-    email: null,
-    photo: null,
-    role: null,
-    verified: null,
-    wantReadBooks: [],
-    currentlyReadingBooks: [],
-    haveReadBooks: [],
-    likedBooks: [],
-  },
-};
-
-const userStart = state => {
-  return updateObject(state, { loading: true });
+  id: null,
+  name: null,
+  email: null,
+  photo: null,
+  role: null,
+  verified: null,
+  wantReadBooks: [],
+  currentlyReadingBooks: [],
+  haveReadBooks: [],
+  likedBooks: [],
 };
 
 const loadUserSuccess = (state, action) => {
   const resultData = action.result;
-  const data = updateObject(state.data, {
+  const data = {
     id: resultData.id,
     name: resultData.name,
     email: resultData.email,
@@ -34,9 +27,9 @@ const loadUserSuccess = (state, action) => {
     currentlyReadingBooks: [...resultData.currentlyReadingBooks],
     haveReadBooks: [...resultData.haveReadBooks],
     likedBooks: [...resultData.likedBooks],
-  });
+  };
 
-  return updateObject(state, { loading: false, data });
+  return updateObject(state, data);
 };
 
 const removeUserSuccess = state => {
@@ -44,30 +37,22 @@ const removeUserSuccess = state => {
 };
 
 const updateDataSuccess = (state, action) => {
-  const data = updateObject(state.data, {
+  const data = updateObject(state, {
     name: action.result.name,
     email: action.result.email,
   });
 
-  return updateObject(state, { loading: false, data });
-};
-
-const updatePasswordSuccess = state => {
-  return updateObject(state, { loading: false });
+  return updateObject(state, data);
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.USER_ACTION_START:
-      return userStart(state);
     case actionTypes.USER_LOAD_SUCCESS:
       return loadUserSuccess(state, action);
     case actionTypes.USER_REMOVE_SUCCESS:
       return removeUserSuccess(state);
     case actionTypes.UPDATE_DATA_SUCCESS:
       return updateDataSuccess(state, action);
-    case actionTypes.UPDATE_PASSWORD_SUCCESS:
-      return updatePasswordSuccess(state);
     default:
       return state;
   }

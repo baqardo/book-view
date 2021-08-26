@@ -44,6 +44,7 @@ class App extends Component {
         <Route path="/myProfile">
           <MyProfile
             userData={this.props.userData}
+            loading={this.props.loading}
             error={this.props.errors.asyncError}
             onUpdateData={this.props.updateUserData}
             onUpdatePassword={this.props.updateUserPassword}
@@ -62,7 +63,7 @@ class App extends Component {
     return (
       <Router>
         <div className="app">
-          <AsyncErrorHandler asyncError={this.props.errors.asyncError}>
+          <AsyncErrorHandler error={this.props.errors.asyncError}>
             <Header isAuthenticated={this.props.isAuthenticated} />
             {routes}
             <Footer />
@@ -77,20 +78,20 @@ const mapStateToProps = state => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
     booksLists: {
-      wantReadBooks: state.user.data.wantReadBooks,
-      currentlyReadingBooks: state.user.data.currentlyReadingBooks,
-      haveReadBooks: state.user.data.haveReadBooks,
-      likedBooks: state.user.data.likedBooks,
+      wantReadBooks: state.user.wantReadBooks,
+      currentlyReadingBooks: state.user.currentlyReadingBooks,
+      haveReadBooks: state.user.haveReadBooks,
+      likedBooks: state.user.likedBooks,
     },
     userData: {
-      photo: state.user.data.photo,
-      name: state.user.data.name,
-      email: state.user.data.email,
-      loading: state.user.loading,
+      photo: state.user.photo,
+      name: state.user.name,
+      email: state.user.email,
     },
     errors: {
-      asyncError: state.error.asyncError,
+      asyncError: state.app.asyncError,
     },
+    loading: state.app.loading,
   };
 };
 
