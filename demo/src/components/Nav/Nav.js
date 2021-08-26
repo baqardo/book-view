@@ -1,9 +1,8 @@
 import React from 'react';
 import './Nav.scss';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-const Nav = props => {
+const Nav = ({ isAuthenticated }) => {
   let links = (
     <>
       <li className="nav__list-item">
@@ -15,7 +14,7 @@ const Nav = props => {
     </>
   );
 
-  if (props.isAuthenticated)
+  if (isAuthenticated)
     links = (
       <>
         <li className="nav__list-item">
@@ -40,10 +39,4 @@ const Nav = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return {
-    isAuthenticated: state.auth.isAuthenticated,
-  };
-};
-
-export default connect(mapStateToProps)(Nav);
+export default Nav;

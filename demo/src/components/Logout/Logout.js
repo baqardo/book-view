@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 
-const Logout = props => {
+const Logout = ({ onLogout }) => {
   useEffect(() => {
-    props.onLogout();
+    onLogout();
   });
 
   return <Redirect to="/" />;

@@ -2,100 +2,84 @@ import React, { Component } from 'react';
 import './BookDetails.scss';
 import { withRouter } from 'react-router';
 import * as queries from '../../utils/axiosQueries';
+import { updateObject, removeFields } from '../../utils/utility';
 
 class BookDetails extends Component {
   constructor(props) {
     super(props);
-    const { id, author } = this.props.match.params;
+    const { OLID, author } = this.props.match.params;
 
     this.state = {
-      id,
-      author,
       loaded: false,
-      coverId: null,
-      cover: null,
-      title: null,
-      publishDate: null,
-      description: null,
-      subjects: null,
-      ratingsAverage: 4.5,
-      ratingsQuantity: 0,
-      reviews: [],
-      likes: 0,
-      wantRead: 0,
-      haveRead: 0,
-      currentlyReading: 0,
-      inDataBase: false,
+      inDatabase: false,
+      externalData: {
+        OLID,
+        author,
+        title: null,
+        coverID: null,
+        publishDate: null,
+        description: null,
+        subjects: [],
+      },
+      internalData: {
+        ratingsAverage: 4.5,
+        ratingsQuantity: 0,
+        reviews: [],
+        likes: 0,
+        wantRead: 0,
+        haveRead: 0,
+        currentlyReading: 0,
+      },
     };
   }
 
-  componentDidMount() {
-    this.loadBookData()
-      .then(res => {
-        this.setState(state => ({
-          ...state,
-          ...res,
-        }));
-      })
-      .catch(err => {
-        this.props.handleError(err);
-      });
-  }
+  async componentDidMount() {
+    const externalData = await this.loadExternalData();
+    const internalData = await this.loadInternalData();
 
-  async loadBookData() {
-    const bookData = await this.loadBookDataFromExternalAPI();
-    const bookAdditionalData = await this.loadBookDataFromInternalAPI();
+    console.log(externalData);
 
-    return { ...bookData, ...bookAdditionalData };
-  }
-
-  async loadBookDataFromExternalAPI() {
-    const id = this.state.id;
-    const response = await queries.getExternalBook(id);
-    const data = response.data;
-    const coverId = response.data.covers[0];
-    const description = data.description.value || data.description;
-
-    const bookDetails = {
-      cover: `http://covers.openlibrary.org/b/id/${coverId}-M.jpg`,
-      coverId,
-      title: data.title,
-      publishDate: data.first_publish_date,
-      description: description,
-      subjects: data.subjects.slice(0, 10),
+    this.setState(state => ({
+      ...state,
+      ...internalData,
+      externalData: updateObject(state.externalData, externalData),
       loaded: true,
-    };
-
-    return bookDetails;
+    }));
   }
 
-  async loadBookDataFromInternalAPI() {
+  async loadExternalData() {
+    const OLID = this.state.externalData.OLID;
+    const response = await queries.getExternalBook(OLID);
+    const result = response.data;
+
+    const externalData = {
+      coverID: result.covers[0],
+      description: result.description.value || result.description,
+      title: result.title,
+      publishDate: result.first_publish_date,
+      subjects: result.subjects.slice(0, 10),
+    };
+
+    return externalData;
+  }
+
+  async loadInternalData() {
     try {
-      const id = this.state.id;
-      const response = await queries.getBook(id);
-      const { data } = response.data;
+      const OLID = this.state.externalData.OLID;
+      const response = await queries.getBook(OLID);
+      let internalData = updateObject({}, response.data.data);
+      internalData = removeFields(internalData, 'id', '_id');
 
-      const bookRatings = {
-        ratingsAverage: data.ratingsAverage,
-        ratingsQuantity: data.ratingsQuantity,
-        reviews: data.reviews,
-        likes: data.likedBooksQuantity,
-        wantRead: data.wantReadBooksQuantity,
-        haveRead: data.haveReadBooksQuantity,
-        currentlyReading: data.currentlyReadingBooksQuantity,
-        inDataBase: true,
-      };
-
-      return bookRatings;
+      return { inDatabase: true, internalData };
     } catch (err) {
-      return { inDataBase: false };
+      return { inDatabase: false };
     }
   }
 
   putNewBookToAPI = async () => {
     try {
-      const id = this.state.id;
-      const data = { OLID: id, title: this.state.title, coverID: this.state.coverId, author: this.state.author };
+      const { OLID, title, coverID, author } = this.state.externalData;
+      const data = { OLID, title, coverID, author };
       await queries.postBook(data);
     } catch (err) {
       console.log(err.response.data.message);
@@ -103,53 +87,57 @@ class BookDetails extends Component {
   };
 
   render() {
+    const loaded = this.state.loaded;
+    if (!loaded) return false;
+    const { OLID, author, title, coverID, publishDate, description, subjects } = this.state.externalData;
+    const { ratingsAverage, ratingsQuantity, reviews, likes, wantRead, haveRead, currentlyReading } =
+      this.state.internalData;
+
     return (
-      this.state.loaded && (
-        <div>
-          ID: {this.state.id}
-          <br />
-          Author: {this.state.author}
-          <br />
-          Title: {this.state.title}
-          <br />
-          Cover: {this.state.cover}
-          <br />
-          Publish Date: {this.state.publishDate}
-          <br />
-          Description: {this.state.description}
-          <br />
-          Subjects:{' '}
-          <ul>
-            {this.state.subjects.map(subject => (
-              <li key={subject}>{subject}</li>
-            ))}
-          </ul>
-          Average Ratings: {this.state.ratingsAverage}
-          <br />
-          Ratings Quantity: {this.state.ratingsQuantity}
-          <br />
-          Reviews: <br />
-          <ul>
-            {this.state.reviews.map(review => (
-              <li key={review._id}>
-                Review: {review.review}
-                <br /> Rating: {review.rating}
-                <br /> Username: {review.user.name}
-                <br /> User Photo: {review.user.photo}
-              </li>
-            ))}
-          </ul>
-          Likes: {this.state.likes}
-          <br />
-          Want Read: {this.state.wantRead}
-          <br />
-          Have Read: {this.state.haveRead}
-          <br />
-          Currently Reading: {this.state.currentlyReading}
-          <br />
-          <button onClick={this.putNewBookToAPI}>Add Book</button>
-        </div>
-      )
+      <div>
+        ID: {OLID}
+        <br />
+        Author: {author}
+        <br />
+        Title: {title}
+        <br />
+        Cover: {`http://covers.openlibrary.org/b/id/${coverID}-M.jpg`}
+        <br />
+        Publish Date: {publishDate}
+        <br />
+        Description: {description}
+        <br />
+        Subjects:{' '}
+        <ul>
+          {subjects.map(subject => (
+            <li key={subject}>{subject}</li>
+          ))}
+        </ul>
+        Average Ratings: {ratingsAverage}
+        <br />
+        Ratings Quantity: {ratingsQuantity}
+        <br />
+        Reviews: <br />
+        <ul>
+          {reviews.map(review => (
+            <li key={review._id}>
+              Review: {review.review}
+              <br /> Rating: {review.rating}
+              <br /> Username: {review.user.name}
+              <br /> User Photo: {review.user.photo}
+            </li>
+          ))}
+        </ul>
+        Likes: {likes}
+        <br />
+        Want Read: {wantRead}
+        <br />
+        Have Read: {haveRead}
+        <br />
+        Currently Reading: {currentlyReading}
+        <br />
+        <button onClick={this.putNewBookToAPI}>Add Book</button>
+      </div>
     );
   }
 }

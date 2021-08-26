@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 import * as queries from '../../utils/axiosQueries';
-import { addAsyncError, startLoading, endLoading } from './app';
+import catchAsync from '../../utils/catchAsync';
 
 const successLoadUser = res => {
   return {
@@ -35,27 +35,15 @@ export const removeUser = () => {
 };
 
 export const updateUserData = (name, email) => {
-  return async dispatch => {
-    dispatch(startLoading());
-    try {
-      const data = { name, email };
-      await queries.patchUserData(data);
-      dispatch(successUpdateData(data));
-    } catch (err) {
-      dispatch(addAsyncError(err));
-    }
-    dispatch(endLoading());
-  };
+  return catchAsync(async dispatch => {
+    const data = { name, email };
+    await queries.patchUserData(data);
+    dispatch(successUpdateData(data));
+  });
 };
 
 export const updateUserPassword = passwords => {
-  return async dispatch => {
-    dispatch(startLoading());
-    try {
-      await queries.patchPassword(passwords);
-    } catch (err) {
-      dispatch(addAsyncError(err));
-    }
-    dispatch(endLoading());
-  };
+  return catchAsync(async dispatch => {
+    await queries.patchPassword(passwords);
+  });
 };

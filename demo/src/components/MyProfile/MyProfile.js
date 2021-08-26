@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const MyProfile = props => {
+const MyProfile = ({ loading, error, userData, onUpdateData, onUpdatePassword }) => {
   const nameRef = useRef();
   const emailRef = useRef();
 
@@ -9,7 +9,7 @@ const MyProfile = props => {
   const confirmPasswordRef = useRef();
 
   useEffect(() => {
-    if (!props.loading && !props.error) {
+    if (!loading && !error) {
       currentPasswordRef.current.value = '';
       newPasswordRef.current.value = '';
       confirmPasswordRef.current.value = '';
@@ -20,7 +20,7 @@ const MyProfile = props => {
     const name = nameRef.current.value;
     const email = emailRef.current.value;
 
-    props.onUpdateData(name, email);
+    onUpdateData(name, email);
   };
 
   const handlePasswordChange = () => {
@@ -34,16 +34,17 @@ const MyProfile = props => {
       passwordConfirm,
     };
 
-    props.onUpdatePassword(passwords);
+    onUpdatePassword(passwords);
   };
 
+  const { name, email, photo } = userData;
   return (
     <div className="my-profile">
-      Name: <input type="text" defaultValue={props.userData.name} id="input__name" name="name" ref={nameRef} />
+      Name: <input type="text" defaultValue={name} id="input__name" name="name" ref={nameRef} />
       <br />
-      Email: <input type="email" defaultValue={props.userData.email} id="input__email" name="email" ref={emailRef} />
+      Email: <input type="email" defaultValue={email} id="input__email" name="email" ref={emailRef} />
       <br />
-      Photo: {props.userData.photo}
+      Photo: {photo}
       <br />
       <button onClick={handleDataChanges}>Save Changes</button>
       <br />

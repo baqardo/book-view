@@ -15,18 +15,19 @@ const initialState = {
 };
 
 const loadUserSuccess = (state, action) => {
-  const resultData = action.result;
+  const { id, name, email, photo, role, verified } = action.result;
+  const { wantReadBooks, currentlyReadingBooks, haveReadBooks, likedBooks } = action.result;
   const data = {
-    id: resultData.id,
-    name: resultData.name,
-    email: resultData.email,
-    photo: resultData.photo,
-    role: resultData.role,
-    verified: resultData.verified,
-    wantReadBooks: [...resultData.wantReadBooks],
-    currentlyReadingBooks: [...resultData.currentlyReadingBooks],
-    haveReadBooks: [...resultData.haveReadBooks],
-    likedBooks: [...resultData.likedBooks],
+    id,
+    name,
+    email,
+    photo,
+    role,
+    verified,
+    wantReadBooks: [...wantReadBooks],
+    currentlyReadingBooks: [...currentlyReadingBooks],
+    haveReadBooks: [...haveReadBooks],
+    likedBooks: [...likedBooks],
   };
 
   return updateObject(state, data);
@@ -37,12 +38,9 @@ const removeUserSuccess = state => {
 };
 
 const updateDataSuccess = (state, action) => {
-  const data = updateObject(state, {
-    name: action.result.name,
-    email: action.result.email,
-  });
+  const { name, email } = action.result;
 
-  return updateObject(state, data);
+  return updateObject(state, { name, email });
 };
 
 const reducer = (state = initialState, action) => {

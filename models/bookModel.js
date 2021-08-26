@@ -30,22 +30,22 @@ const bookSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    wantReadBooksQuantity: {
+    wantRead: {
       type: Number,
       default: 0,
       min: 0,
     },
-    currentlyReadingBooksQuantity: {
+    currentlyReading: {
       type: Number,
       default: 0,
       min: 0,
     },
-    haveReadBooksQuantity: {
+    haveRead: {
       type: Number,
       default: 0,
       min: 0,
     },
-    likedBooksQuantity: {
+    likes: {
       type: Number,
       default: 0,
       min: 0,

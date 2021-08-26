@@ -30,7 +30,7 @@ class App extends Component {
   render() {
     let routes = (
       <Switch>
-        <Route path="/book/:id/author/:author">
+        <Route path="/book/:OLID/author/:author">
           <BookDetails />
         </Route>
         <Route path="/login">
