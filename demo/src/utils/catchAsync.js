@@ -1,10 +1,10 @@
-import { addAsyncError, startLoading, endLoading } from '../store/actions/app';
+import { addInternalAsyncError, startLoading, endLoading } from '../store/actions/app';
 
 const catchAsync = fn => {
   return async dispatch => {
     dispatch(startLoading());
     await fn(dispatch).catch(err => {
-      dispatch(addAsyncError(err));
+      dispatch(addInternalAsyncError(err));
     });
     dispatch(endLoading());
   };

@@ -1,8 +1,14 @@
 import * as actionTypes from './actionTypes';
 
-export const addAsyncError = err => {
+export const addInternalAsyncError = err => {
   return {
-    type: actionTypes.ADD_ASYNC_ERROR,
+    type: actionTypes.ADD_INTERNAL_ASYNC_ERROR,
+    error: err.response?.data,
+  };
+};
+export const addExternalAsyncError = err => {
+  return {
+    type: actionTypes.ADD_EXTERNAL_ASYNC_ERROR,
     error: err.response?.data,
   };
 };

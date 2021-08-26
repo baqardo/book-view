@@ -37,8 +37,6 @@ class BookDetails extends Component {
     const externalData = await this.loadExternalData();
     const internalData = await this.loadInternalData();
 
-    console.log(externalData);
-
     this.setState(state => ({
       ...state,
       ...internalData,
@@ -69,7 +67,6 @@ class BookDetails extends Component {
       const response = await queries.getBook(OLID);
       let internalData = updateObject({}, response.data.data);
       internalData = removeFields(internalData, 'id', '_id');
-
       return { inDatabase: true, internalData };
     } catch (err) {
       return { inDatabase: false };
