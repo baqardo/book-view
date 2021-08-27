@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './BookDetails.scss';
 import { withRouter } from 'react-router';
 import * as queries from '../../utils/axiosQueries';
-import { updateObject, removeFields } from '../../utils/utility';
+import { updateObject } from '../../utils/utility';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/app';
 
@@ -115,7 +115,7 @@ class BookDetails extends Component {
         currentlyReading: result.currentlyReading,
       };
 
-      this.setState({ inDatabase: true, internalData });
+      this.setState({ saved: true, internalData });
     } catch (err) {
       this.props.onInternalError(err);
     }
@@ -127,6 +127,12 @@ class BookDetails extends Component {
     if (!id) return;
 
     this.props.onAddBook(id, listName);
+
+    const internalData = { ...this.state.internalData };
+    listName = listName.replace('Books', '');
+    internalData[listName] = internalData[listName] + 1;
+
+    this.setState({ internalData });
   };
 
   removeFromList = async listName => {
@@ -135,6 +141,11 @@ class BookDetails extends Component {
     if (!id) return;
 
     this.props.onRemoveBook(id, listName);
+    listName = listName.replace('Books', '');
+    const internalData = { ...this.state.internalData };
+    console.log(internalData, listName);
+    internalData[listName] = internalData[listName] - 1;
+    this.setState({ internalData });
   };
 
   render() {
