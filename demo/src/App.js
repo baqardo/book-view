@@ -31,7 +31,7 @@ class App extends Component {
     let routes = (
       <Switch>
         <Route path="/book/:OLID/author/:author">
-          <BookDetails />
+          <BookDetails onAddBook={this.props.onAddBook} onRemoveBook={this.props.onRemoveBook} />
         </Route>
         <Route path="/login">
           <Login onLogin={this.props.onLogin} isAuthenticated={this.props.isAuthenticated} />
@@ -102,6 +102,8 @@ const mapDispatchToProps = dispatch => {
     onLogout: () => dispatch(actionCreators.logout()),
     updateUserData: (name, email) => dispatch(actionCreators.updateUserData(name, email)),
     updateUserPassword: passwords => dispatch(actionCreators.updateUserPassword(passwords)),
+    onAddBook: (bookID, listName) => dispatch(actionCreators.addBookToList(bookID, listName)),
+    onRemoveBook: (bookID, listName) => dispatch(actionCreators.removeBookFromList(bookID, listName)),
   };
 };
 

@@ -158,7 +158,7 @@ userSchema.methods.calcQuantity = async function (bookId, fieldName) {
     },
   ]);
 
-  const quantityField = fieldName + 'Quantity';
+  const quantityField = fieldName.replace('Books', '');
 
   if (stats.length > 0)
     await Book.findByIdAndUpdate(bookId, {

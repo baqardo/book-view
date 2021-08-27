@@ -43,6 +43,10 @@ const updateDataSuccess = (state, action) => {
   return updateObject(state, { name, email });
 };
 
+const updateListSuccess = (state, action) => {
+  return updateObject(state, action.result);
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.USER_LOAD_SUCCESS:
@@ -51,6 +55,8 @@ const reducer = (state = initialState, action) => {
       return removeUserSuccess(state);
     case actionTypes.UPDATE_DATA_SUCCESS:
       return updateDataSuccess(state, action);
+    case actionTypes.UPDATE_LIST_SUCCESS:
+      return updateListSuccess(state, action);
     default:
       return state;
   }

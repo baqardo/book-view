@@ -56,7 +56,7 @@ const updateList = (operation, listName) =>
         new: true,
         runValidators: true,
       }
-    );
+    ).populate({ path: listName, model: 'Book', select: 'OLID author coverID' });
 
     updatedUser.calcQuantity(req.params.bookId, listName);
 

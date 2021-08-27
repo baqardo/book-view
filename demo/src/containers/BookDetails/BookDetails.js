@@ -3,15 +3,16 @@ import './BookDetails.scss';
 import { withRouter } from 'react-router';
 import * as queries from '../../utils/axiosQueries';
 import { updateObject, removeFields } from '../../utils/utility';
+import { connect } from 'react-redux';
+import * as actionCreators from '../../store/actions/app';
 
 class BookDetails extends Component {
   constructor(props) {
     super(props);
     const { OLID, author } = this.props.match.params;
-
     this.state = {
-      loaded: false,
-      inDatabase: false,
+      loading: true,
+      saved: false,
       externalData: {
         OLID,
         author,
@@ -22,10 +23,11 @@ class BookDetails extends Component {
         subjects: [],
       },
       internalData: {
+        id: null,
         ratingsAverage: 4.5,
         ratingsQuantity: 0,
         reviews: [],
-        likes: 0,
+        liked: 0,
         wantRead: 0,
         haveRead: 0,
         currentlyReading: 0,
@@ -34,65 +36,115 @@ class BookDetails extends Component {
   }
 
   async componentDidMount() {
-    const externalData = await this.loadExternalData();
-    const internalData = await this.loadInternalData();
+    const externalData = await this.loadExternal();
+    const internalData = await this.loadInternal();
 
-    this.setState(state => ({
-      ...state,
-      ...internalData,
-      externalData: updateObject(state.externalData, externalData),
-      loaded: true,
-    }));
-  }
+    if (!externalData && !internalData) return;
 
-  async loadExternalData() {
-    const OLID = this.state.externalData.OLID;
-    const response = await queries.getExternalBook(OLID);
-    const result = response.data;
-
-    const externalData = {
-      coverID: result.covers[0],
-      description: result.description.value || result.description,
-      title: result.title,
-      publishDate: result.first_publish_date,
-      subjects: result.subjects.slice(0, 10),
+    const newState = {
+      ...this.state,
+      loading: false,
+      externalData: updateObject(this.state.externalData, externalData),
+      internalData: updateObject(this.state.internalData, internalData),
     };
 
-    return externalData;
+    if (internalData) newState.saved = true;
+
+    this.setState(newState);
   }
 
-  async loadInternalData() {
+  async loadExternal() {
+    try {
+      const OLID = this.state.externalData.OLID;
+      const response = await queries.getExternalBook(OLID);
+      const result = response.data;
+
+      const externalData = {
+        coverID: result.covers[0],
+        description: result.description.value || result.description,
+        title: result.title,
+        publishDate: result.first_publish_date,
+        subjects: result.subjects.slice(0, 10),
+      };
+
+      return externalData;
+    } catch (err) {
+      this.props.onExternalError(err);
+      return null;
+    }
+  }
+
+  async loadInternal() {
     try {
       const OLID = this.state.externalData.OLID;
       const response = await queries.getBook(OLID);
-      let internalData = updateObject({}, response.data.data);
-      internalData = removeFields(internalData, 'id', '_id');
-      return { inDatabase: true, internalData };
+      const result = response.data.data;
+
+      const internalData = {
+        id: result.id,
+        ratingsAverage: result.ratingsAverage,
+        ratingsQuantity: result.ratingsQuantity,
+        reviews: [...result.reviews],
+        liked: result.liked,
+        wantRead: result.wantRead,
+        haveRead: result.haveRead,
+        currentlyReading: result.currentlyReading,
+      };
+
+      return internalData;
     } catch (err) {
-      return { inDatabase: false };
+      this.props.onInternalError(err);
+      return null;
     }
   }
 
-  putNewBookToAPI = async () => {
+  async saveBook() {
     try {
       const { OLID, title, coverID, author } = this.state.externalData;
-      const data = { OLID, title, coverID, author };
-      await queries.postBook(data);
+      const response = await queries.postBook({ OLID, title, coverID, author });
+      const result = response.data.data;
+
+      const internalData = {
+        id: result.id,
+        ratingsAverage: result.ratingsAverage,
+        ratingsQuantity: result.ratingsQuantity,
+        reviews: [],
+        liked: result.liked,
+        wantRead: result.wantRead,
+        haveRead: result.haveRead,
+        currentlyReading: result.currentlyReading,
+      };
+
+      this.setState({ inDatabase: true, internalData });
     } catch (err) {
-      console.log(err.response.data.message);
+      this.props.onInternalError(err);
     }
+  }
+
+  addToList = async listName => {
+    if (!this.state.saved) await this.saveBook();
+    const { id } = this.state.internalData;
+    if (!id) return;
+
+    this.props.onAddBook(id, listName);
+  };
+
+  removeFromList = async listName => {
+    if (!this.state.saved) await this.saveBook();
+    const { id } = this.state.internalData;
+    if (!id) return;
+
+    this.props.onRemoveBook(id, listName);
   };
 
   render() {
-    const loaded = this.state.loaded;
-    if (!loaded) return false;
+    if (this.state.loading) return false;
     const { OLID, author, title, coverID, publishDate, description, subjects } = this.state.externalData;
-    const { ratingsAverage, ratingsQuantity, reviews, likes, wantRead, haveRead, currentlyReading } =
+    const { ratingsAverage, ratingsQuantity, reviews, liked, wantRead, haveRead, currentlyReading } =
       this.state.internalData;
-
     return (
       <div>
-        ID: {OLID}
+        OLID: {OLID}
         <br />
         Author: {author}
         <br />
@@ -125,7 +177,7 @@ class BookDetails extends Component {
             </li>
           ))}
         </ul>
-        Likes: {likes}
+        Liked: {liked}
         <br />
         Want Read: {wantRead}
         <br />
@@ -133,10 +185,25 @@ class BookDetails extends Component {
         <br />
         Currently Reading: {currentlyReading}
         <br />
-        <button onClick={this.putNewBookToAPI}>Add Book</button>
+        <button onClick={() => this.addToList('likedBooks')}>Add Book to Liked</button>
+        <button onClick={() => this.addToList('wantReadBooks')}>Add Book to Want Read</button>
+        <button onClick={() => this.addToList('currentlyReadingBooks')}>Add Book to Currently Reading</button>
+        <button onClick={() => this.addToList('haveReadBooks')}>Add Book to Have Read</button>
+        <br />
+        <button onClick={() => this.removeFromList('likedBooks')}>Remove Book to Liked</button>
+        <button onClick={() => this.removeFromList('wantReadBooks')}>Remove Book to Want Read</button>
+        <button onClick={() => this.removeFromList('currentlyReadingBooks')}>Remove Book to Currently Reading</button>
+        <button onClick={() => this.removeFromList('haveReadBooks')}>Remove Book to Have Read</button>
       </div>
     );
   }
 }
 
-export default withRouter(BookDetails);
+const mapDispatchToProps = dispatch => {
+  return {
+    onExternalError: err => dispatch(actionCreators.addExternalAsyncError(err)),
+    onInternalError: err => dispatch(actionCreators.addInternalAsyncError(err)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(withRouter(BookDetails));

@@ -49,14 +49,14 @@ router.get('/me', getMe, getUser);
 router.patch('/updateMe', updateMe);
 router.delete('/deleteMe', deleteMe);
 
-router.patch('/addLikeBook', addLikedBook);
-router.patch('/removeLikeBook', removeLikedBook);
-router.patch('/addWantReadBook', addToReadBook);
-router.patch('/removeWantReadBook', removeToReadBook);
-router.patch('/addHaveReadBook', addHaveReadBook);
-router.patch('/removeHaveReadBook', removeHaveReadBook);
-router.patch('/addReadingNowBook', addCurrentlyReadingBook);
-router.patch('/removeReadingNowBook', removeCurrentlyReadingBook);
+router.patch('/addLikedBooks', addLikedBook);
+router.patch('/removeLikedBooks', removeLikedBook);
+router.patch('/addWantReadBooks', addToReadBook);
+router.patch('/removeWantReadBooks', removeToReadBook);
+router.patch('/addHaveReadBooks', addHaveReadBook);
+router.patch('/removeHaveReadBooks', removeHaveReadBook);
+router.patch('/addCurrentlyReadingBooks', addCurrentlyReadingBook);
+router.patch('/removeCurrentlyReadingBooks', removeCurrentlyReadingBook);
 
 //! Routes only for admin
 router.use(restrictTo('admin'));

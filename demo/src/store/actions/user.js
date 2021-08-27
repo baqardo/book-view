@@ -22,6 +22,13 @@ const successUpdateData = res => {
   };
 };
 
+const successUpdateList = res => {
+  return {
+    type: actionTypes.UPDATE_LIST_SUCCESS,
+    result: res,
+  };
+};
+
 export const loadUser = data => {
   return dispatch => {
     dispatch(successLoadUser(data));
@@ -45,5 +52,23 @@ export const updateUserData = (name, email) => {
 export const updateUserPassword = passwords => {
   return catchAsync(async dispatch => {
     await queries.patchPassword(passwords);
+  });
+};
+
+export const addBookToList = (bookID, listName) => {
+  return catchAsync(async dispatch => {
+    const upperCaseName = listName.charAt(0).toUpperCase() + listName.slice(1);
+    const response = await queries.addBookToList(bookID, upperCaseName);
+    const newList = response.data.data[listName];
+    dispatch(successUpdateList({ [listName]: newList }));
+  });
+};
+
+export const removeBookFromList = (bookID, listName) => {
+  return catchAsync(async dispatch => {
+    const upperCaseName = listName.charAt(0).toUpperCase() + listName.slice(1);
+    const response = await queries.removeBookFromList(bookID, upperCaseName);
+    const newList = response.data.data[listName];
+    dispatch(successUpdateList({ [listName]: newList }));
   });
 };

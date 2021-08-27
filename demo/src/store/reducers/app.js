@@ -6,6 +6,7 @@ const initialState = {
   error: null,
   internalAsyncError: null,
   externalAsyncError: null,
+  networkAsyncError: null,
 };
 
 const addInternalAsyncError = (state, action) => {
@@ -18,8 +19,19 @@ const addExternalAsyncError = (state, action) => {
   return updateObject(state, { externalAsyncError });
 };
 
+const addNetworkAsyncError = (state, action) => {
+  const networkAsyncError = updateObject(state.externalAsyncError, action.error);
+  return updateObject(state, { networkAsyncError });
+};
+
 const startLoading = state => {
-  return updateObject(state, { loading: true, error: null, internalAsyncError: null, externalAsyncError: null });
+  return updateObject(state, {
+    loading: true,
+    error: null,
+    internalAsyncError: null,
+    externalAsyncError: null,
+    networkAsyncError: null,
+  });
 };
 
 const endLoading = state => {
@@ -32,6 +44,8 @@ const reducer = (state = initialState, action) => {
       return addInternalAsyncError(state, action);
     case actionTypes.ADD_EXTERNAL_ASYNC_ERROR:
       return addExternalAsyncError(state, action);
+    case actionTypes.ADD_NETWORK_ASYNC_ERROR:
+      return addNetworkAsyncError(state, action);
     case actionTypes.START_LOADING:
       return startLoading(state);
     case actionTypes.END_LOADING:

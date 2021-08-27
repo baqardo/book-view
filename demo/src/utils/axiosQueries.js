@@ -35,3 +35,11 @@ export const patchPassword = async data => {
 export const patchUserData = async data => {
   return await authorizedQuery.patch('users/updateMe', data);
 };
+
+export const addBookToList = async (bookID, listName) => {
+  return await authorizedQuery.patch(`books/${bookID}/users/add${listName}`);
+};
+
+export const removeBookFromList = async (bookID, listName) => {
+  return await authorizedQuery.patch(`books/${bookID}/users/remove${listName}`);
+};
