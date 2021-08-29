@@ -13,10 +13,10 @@ exports.updateBook = factory.updateOne(Book);
 exports.getAllBooks = factory.getAll(Book);
 exports.getBook = factory.getOne(Book, {
   path: 'reviews',
-  populate: { path: 'user', model: 'User', select: 'name photo -_id' },
+  populate: { path: 'user', model: 'User', select: 'name photo' },
 });
 exports.getBookByField = factory.getOneByField(Book, {
   path: 'reviews',
-  populate: { path: 'user', model: 'User', select: 'name photo -_id' },
+  populate: { path: 'user', model: 'User', select: 'name photo' },
 });
 exports.deleteBook = factory.deleteOne(Book);

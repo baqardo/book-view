@@ -35,6 +35,7 @@ class App extends Component {
             isAuthenticated={this.props.isAuthenticated}
             onAddBook={this.props.onAddBook}
             onRemoveBook={this.props.onRemoveBook}
+            id={this.props.userData.id}
           />
         </Route>
         <Route path="/login">
@@ -88,6 +89,7 @@ const mapStateToProps = state => {
       likedBooks: state.user.likedBooks,
     },
     userData: {
+      id: state.user.id,
       photo: state.user.photo,
       name: state.user.name,
       email: state.user.email,

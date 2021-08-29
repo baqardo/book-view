@@ -47,3 +47,7 @@ export const removeBookFromList = async (bookID, listName) => {
 export const postReview = async data => {
   return await authorizedQuery.post(`reviews`, data);
 };
+
+export const updateReview = async (data, reviewID) => {
+  return await authorizedQuery.patch(`reviews/${reviewID}`, data);
+};
