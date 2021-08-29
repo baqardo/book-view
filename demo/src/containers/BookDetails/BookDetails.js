@@ -190,6 +190,21 @@ class BookDetails extends Component {
     this.ratingRef.current.value = '';
   };
 
+  deleteReview = async () => {
+    const reviews = [...this.state.internalData.reviews];
+
+    const reviewIndex = reviews.findIndex(review => {
+      return review.user.id === this.props.id;
+    });
+    const reviewID = reviews[reviewIndex]._id;
+
+    await queries.deleteReview(reviewID);
+    reviews.splice(reviewIndex, 1);
+    const internalData = { ...this.state.internalData };
+    internalData.reviews = reviews;
+    this.setState({ internalData });
+  };
+
   render() {
     if (this.state.loading) return false;
     const { OLID, author, title, coverID, publishDate, description, subjects } = this.state.externalData;
@@ -198,39 +213,22 @@ class BookDetails extends Component {
 
     let reviewElements;
     if (this.props.isAuthenticated)
-      reviewElements = this.state.internalData.reviews.some(review => {
-        return review.user.id === this.props.id;
-      }) ? (
+      reviewElements = (
         <>
           <textarea placeholder="Your review..." name="review" ref={this.reviewRef} />
           <input type="number" min="1" max="5" name="rating" ref={this.ratingRef} />
-          <button onClick={this.addReview}>Edit Review</button>
-          <button onClick={this.addReview}>Delete Review</button>
-        </>
-      ) : (
-        <>
-          <textarea placeholder="Your review..." name="review" ref={this.reviewRef} />
-          <input type="number" min="1" max="5" name="rating" ref={this.ratingRef} />
-          <button onClick={this.addReview}>Add Review</button>
+          {this.state.internalData.reviews.some(review => {
+            return review.user === this.props.id || review.user.id === this.props.id;
+          }) ? (
+            <>
+              <button onClick={this.editReview}>Edit Review</button>
+              <button onClick={this.deleteReview}>Delete Review</button>
+            </>
+          ) : (
+            <button onClick={this.addReview}>Add Review</button>
+          )}
         </>
       );
-
-    reviewElements = (
-      <>
-        <textarea placeholder="Your review..." name="review" ref={this.reviewRef} />
-        <input type="number" min="1" max="5" name="rating" ref={this.ratingRef} />
-        {this.state.internalData.reviews.some(review => {
-          return review.user.id === this.props.id;
-        }) ? (
-          <>
-            <button onClick={this.editReview}>Edit Review</button>
-            <button onClick={this.addReview}>Delete Review</button>
-          </>
-        ) : (
-          <button onClick={this.addReview}>Add Review</button>
-        )}
-      </>
-    );
 
     return (
       <div>

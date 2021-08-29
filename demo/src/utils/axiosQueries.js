@@ -51,3 +51,7 @@ export const postReview = async data => {
 export const updateReview = async (data, reviewID) => {
   return await authorizedQuery.patch(`reviews/${reviewID}`, data);
 };
+
+export const deleteReview = async reviewID => {
+  return await authorizedQuery.delete(`reviews/${reviewID}`);
+};
