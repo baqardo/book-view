@@ -38,9 +38,9 @@ const removeUserSuccess = state => {
 };
 
 const updateDataSuccess = (state, action) => {
-  const { name, email } = action.result;
+  const { name, email, photo } = action.result;
 
-  return updateObject(state, { name, email });
+  return updateObject(state, { name, email, photo });
 };
 
 const updateListSuccess = (state, action) => {

@@ -41,11 +41,12 @@ export const removeUser = () => {
   };
 };
 
-export const updateUserData = (name, email) => {
+export const updateUserData = form => {
   return catchAsync(async dispatch => {
-    const data = { name, email };
-    await queries.patchUserData(data);
-    dispatch(successUpdateData(data));
+    const response = await queries.patchUserData(form);
+    const { name, email, photo } = response.data.data;
+    console.log(response.data.data);
+    dispatch(successUpdateData({ name, email, photo }));
   });
 };
 

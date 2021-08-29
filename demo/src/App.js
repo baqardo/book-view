@@ -100,7 +100,7 @@ const mapDispatchToProps = dispatch => {
     restoreSession: () => dispatch(actionCreators.restoreSession()),
     onLogin: (email, password) => dispatch(actionCreators.login(email, password)),
     onLogout: () => dispatch(actionCreators.logout()),
-    updateUserData: (name, email) => dispatch(actionCreators.updateUserData(name, email)),
+    updateUserData: form => dispatch(actionCreators.updateUserData(form)),
     updateUserPassword: passwords => dispatch(actionCreators.updateUserPassword(passwords)),
     onAddBook: (bookID, listName) => dispatch(actionCreators.addBookToList(bookID, listName)),
     onRemoveBook: (bookID, listName) => dispatch(actionCreators.removeBookFromList(bookID, listName)),

@@ -41,6 +41,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     return next(new AppError('This route is not for password updates. please use /updateMyPassword', 400));
 
   const filteredBody = filterObj.holdFields(req.body, 'name', 'email');
+  if (req.file) filteredBody.photo = req.file.filename;
 
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
