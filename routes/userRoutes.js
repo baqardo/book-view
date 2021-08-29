@@ -16,6 +16,8 @@ const {
   removeHaveReadBook,
   addCurrentlyReadingBook,
   removeCurrentlyReadingBook,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = require('../controllers/userController');
 const {
   signup,
@@ -46,7 +48,7 @@ router.get('/logout', logout);
 router.get('/sendVerificationEmail', sendVerificationEmail);
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 router.patch('/addLikedBooks', addLikedBook);
