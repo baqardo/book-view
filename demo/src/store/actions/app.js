@@ -3,7 +3,7 @@ import * as actionTypes from './actionTypes';
 export const addInternalAsyncError = err => {
   return {
     type: actionTypes.ADD_INTERNAL_ASYNC_ERROR,
-    error: err.response.data,
+    error: err.response?.data,
   };
 };
 export const addExternalAsyncError = err => {

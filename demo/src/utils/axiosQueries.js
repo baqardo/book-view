@@ -43,3 +43,7 @@ export const addBookToList = async (bookID, listName) => {
 export const removeBookFromList = async (bookID, listName) => {
   return await authorizedQuery.patch(`books/${bookID}/users/remove${listName}`);
 };
+
+export const postReview = async data => {
+  return await authorizedQuery.post(`reviews`, data);
+};

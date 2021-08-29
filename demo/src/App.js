@@ -31,7 +31,11 @@ class App extends Component {
     let routes = (
       <Switch>
         <Route path="/book/:OLID/author/:author">
-          <BookDetails onAddBook={this.props.onAddBook} onRemoveBook={this.props.onRemoveBook} />
+          <BookDetails
+            isAuthenticated={this.props.isAuthenticated}
+            onAddBook={this.props.onAddBook}
+            onRemoveBook={this.props.onRemoveBook}
+          />
         </Route>
         <Route path="/login">
           <Login onLogin={this.props.onLogin} isAuthenticated={this.props.isAuthenticated} />

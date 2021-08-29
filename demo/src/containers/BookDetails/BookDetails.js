@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import './BookDetails.scss';
 import { withRouter } from 'react-router';
 import * as queries from '../../utils/axiosQueries';
@@ -33,6 +33,9 @@ class BookDetails extends Component {
         currentlyReading: 0,
       },
     };
+
+    this.reviewRef = createRef();
+    this.ratingRef = createRef();
   }
 
   async componentDidMount() {
@@ -143,8 +146,24 @@ class BookDetails extends Component {
     this.props.onRemoveBook(id, listName);
     listName = listName.replace('Books', '');
     const internalData = { ...this.state.internalData };
-    console.log(internalData, listName);
     internalData[listName] = internalData[listName] - 1;
+    this.setState({ internalData });
+  };
+
+  addReview = async () => {
+    const review = this.reviewRef.current.value;
+    const rating = this.ratingRef.current.value;
+
+    if (!this.state.saved) await this.saveBook();
+    const bookID = this.state.internalData.id;
+    if (!bookID) return;
+
+    const result = await queries.postReview({ review, rating, book: bookID });
+    const data = result.data.data;
+    console.log(result);
+    const internalData = { ...this.state.internalData };
+    internalData.reviews = [...this.state.internalData.reviews];
+    internalData.reviews.push(data);
     this.setState({ internalData });
   };
 
@@ -153,6 +172,17 @@ class BookDetails extends Component {
     const { OLID, author, title, coverID, publishDate, description, subjects } = this.state.externalData;
     const { ratingsAverage, ratingsQuantity, reviews, liked, wantRead, haveRead, currentlyReading } =
       this.state.internalData;
+
+    let reviewElements;
+    if (this.props.isAuthenticated)
+      reviewElements = (
+        <>
+          <textarea placeholder="Your review..." name="review" ref={this.reviewRef} />
+          <input type="number" min="1" max="5" name="rating" ref={this.ratingRef} />
+          <button onClick={this.addReview}>Add Review</button>
+        </>
+      );
+
     return (
       <div>
         OLID: {OLID}
@@ -205,6 +235,8 @@ class BookDetails extends Component {
         <button onClick={() => this.removeFromList('wantReadBooks')}>Remove Book to Want Read</button>
         <button onClick={() => this.removeFromList('currentlyReadingBooks')}>Remove Book to Currently Reading</button>
         <button onClick={() => this.removeFromList('haveReadBooks')}>Remove Book to Have Read</button>
+        <br />
+        {reviewElements}
       </div>
     );
   }

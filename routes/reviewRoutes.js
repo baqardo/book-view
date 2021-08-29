@@ -16,7 +16,8 @@ const router = express.Router();
 
 router.use(protect, verified);
 
-router.route('/').get(getAllReviews).post(restrictTo('user'), setUserId, createReview);
+router.route('/').get(getAllReviews).post(setUserId, createReview);
+// router.route('/').get(getAllReviews).post(restrictTo('user'), setUserId, createReview);
 router
   .route('/:id')
   .get(getReview)
