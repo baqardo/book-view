@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import Book from '../../components/Book/Book';
 import './Home.scss';
 import * as queries from '../../utils/axiosQueries';
+import BookList from '../../components/BookList/BookList';
 
 class Home extends Component {
   state = { data: null };
@@ -19,18 +19,19 @@ class Home extends Component {
 
   getBooksList = async () => {
     const response = await queries.getExternalBookList();
-    const data = response.data;
+    const data = response.data.docs;
 
     if (response.status !== 200) {
       throw Error('Error');
     }
 
-    const works = data.works.map(work => {
+    const works = data.map(work => {
       return {
         OLID: work.key.split('/')[2],
         title: work.title,
-        cover: `http://covers.openlibrary.org/b/olid/${work.cover_edition_key}-M.jpg`,
-        author: work.authors[0].name,
+        cover: `http://covers.openlibrary.org/b/id/${work.cover_i}-M.jpg`,
+        author: work.author_name[0],
+        year: work.first_publish_year,
       };
     });
 
@@ -38,14 +39,7 @@ class Home extends Component {
   };
 
   render() {
-    return (
-      <main className="home">
-        {this.state.data &&
-          this.state.data.map(el => (
-            <Book key={el.OLID} id={el.OLID} author={el.author} title={el.title} cover={el.cover} />
-          ))}
-      </main>
-    );
+    return <main className="home">{this.state.data && <BookList books={this.state.data} />}</main>;
   }
 }
 

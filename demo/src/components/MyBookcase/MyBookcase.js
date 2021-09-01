@@ -1,16 +1,16 @@
 import React from 'react';
-import BooksList from '../BooksList/BooksList';
+import BookList from '../BookList/BookList';
 
-const MyBookcase = ({ booksLists }) => (
+const MyBookcase = ({ bookLists }) => (
   <div className="my-bookcase">
     Books that I want to read:
-    <BooksList books={booksLists.wantReadBooks} />
+    <BookList books={bookLists.wantReadBooks} />
     Books that I'm currently reading:
-    <BooksList books={booksLists.currentlyReadingBooks} />
+    <BookList books={bookLists.currentlyReadingBooks} />
     Books that I have read:
-    <BooksList books={booksLists.haveReadBooks} />
+    <BookList books={bookLists.haveReadBooks} />
     Books that I liked:
-    <BooksList books={booksLists.likedBooks} />
+    <BookList books={bookLists.likedBooks} />
   </div>
 );
 
